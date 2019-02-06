@@ -21,3 +21,5 @@ C:\Google drev\Main drive\Programming\Projects\VikingChess\obj\x86\Debug\VikingC
 C:\Google drev\Main drive\Programming\Projects\VikingChess\obj\x86\Debug\VikingChess.csproj.CopyComplete
 C:\Google drev\Main drive\Programming\Projects\VikingChess\obj\x86\Debug\VikingChess.exe
 C:\Google drev\Main drive\Programming\Projects\VikingChess\obj\x86\Debug\VikingChess.pdb
+C:\Google drev\Main drive\Programming\Projects\VikingChess\bin\Windows\x86\Debug\Content\piece.xnb
+C:\Google drev\Main drive\Programming\Projects\VikingChess\bin\Windows\x86\Debug\Content\rect.xnb

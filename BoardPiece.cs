@@ -9,14 +9,18 @@ using System.Threading.Tasks;
 
 namespace VikingChess
 {
-    class BoardPiece
+    class Piece
     {
-        public Vector2 position { get; set; }
-
         //Constructor
-        public BoardPiece()
+        public Piece()
         {
-            position = new Vector2(50, 50);
+
+        }
+
+        //Move
+        public void Move()
+        {
+
         }
     }
 }
