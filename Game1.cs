@@ -19,16 +19,21 @@ namespace VikingChess
 
         //Sprites
         Texture2D spritePiece;
-
-        Texture2D spriteRect;
-        int rectX = 50;
-        int rectY = 50;
-        int spriteSize = 50;
+        Texture2D spriteBoard;
+        Texture2D spriteSelectedRing;
 
         //Board
-        private int rows = 3;
-        private int columns = 3;
+        private int rows = 11;
+        private int columns = 11;
+        private int boardX = 30;
+        private int boardY = 30;
+        private int squareSize = 40;
         private Piece[,] board;
+
+        //Selected piece
+        private Piece selectedPiece;
+        private int selectedPieceRow;
+        private int selectedPieceColumn;
 
         //Piece
         private Piece piece1;
@@ -53,6 +58,9 @@ namespace VikingChess
             //Board
             board = new Piece[rows, columns];
 
+            //Selected piece
+            selectedPiece = null;
+
             //Pices
             piece1 = new Piece();
             piece2 = new Piece();
@@ -68,6 +76,11 @@ namespace VikingChess
             board[2, 0] = piece1;
             board[2, 1] = piece2;
             board[2, 2] = piece3;
+            board[3, 3] = piece3;
+            board[5, 5] = piece3;
+            board[8, 8] = piece3;
+            board[9, 10] = piece3;
+            board[10, 10] = piece3;
 
             base.Initialize();
         }
@@ -78,13 +91,15 @@ namespace VikingChess
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             spritePiece = Content.Load<Texture2D>("piece");
-            spriteRect = Content.Load<Texture2D>("rect");
+            spriteBoard = Content.Load<Texture2D>("board");
+            spriteSelectedRing = Content.Load<Texture2D>("selected_ring");
         }
 
         protected override void UnloadContent()
         {
         }
 
+        /*********************************** Update ***********************************/
         protected override void Update(GameTime gameTime)
         {
             //Exit
@@ -97,19 +112,44 @@ namespace VikingChess
             var mouseState = Mouse.GetState();
             var mousePoint = new Point(mouseState.X, mouseState.Y);
 
+            //Select and move pieces
+            for (int row = 0; row < rows; row++)
+            {
+                //Columns
+                for (int column = 0; column < columns; column++)
+                {
+                    if (PointCollisionWithBox(mousePoint.X, mousePoint.Y, boardX + (squareSize * row), boardY + (squareSize * column), squareSize, squareSize))
+                    {
+                        if (mouseState.LeftButton == ButtonState.Pressed)
+                        {
+                            //Empty square
+                            if (board[column, row] == null)
+                            {
+                                //If a piece is selected
+                                if (selectedPiece != null)
+                                {
+                                    MovePiece();
 
+                                    //Deselect piece
+                                    selectedPiece = null;
+                                }
+                            }
+                            //Not empty square - select the piece
+                            else
+                            {
+                                selectedPiece = board[column, row];
+                                selectedPieceRow = row;
+                                selectedPieceColumn = column;
+                            }
+                        }
+                    }
+                }
+            }
 
             base.Update(gameTime);
         }
 
-        /********** Update Methods ***********/
-        /*
-        private bool IsPointOverSprite(float x, float y, Sprite texture2D)
-        {
-            return(texture2D.get)
-        }
-        */
-
+        /*********************************** Draw ***********************************/
         protected override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin();
@@ -121,53 +161,32 @@ namespace VikingChess
             var mouseState = Mouse.GetState();
             var mousePoint = new Point(mouseState.X, mouseState.Y);
 
+            //Draw board
+            DrawSprite(boardX, boardY, spriteBoard, Color.White, 1);
 
-            //Draw hover test
-            if (Hover(mousePoint.X, mousePoint.Y, rectX, rectY, spriteSize, spriteSize))
+            //Draw selected ring
+            if (selectedPiece != null)
             {
-                DrawSprite(rectX, rectY, spriteRect, Color.Wheat, 1);
+                DrawSprite(30 + (selectedPieceRow * squareSize), 30 + (selectedPieceColumn * squareSize), spriteSelectedRing, Color.White, 1f);
             }
 
             //Draw pieces
-            int margin2 = 60;
-
-            //Rows
-            for (int row = 0; row < 3; row++)
-            {
-                int margin1 = 60;
-                
-                //Column
-                for (int column = 0; column < 3; column++)
-                {
-                    if (board[row, column] != null)
-                    {
-                        DrawSprite(100 + margin1, 100 + margin2, spritePiece, Color.White, 0.04f);
-                    }
-
-                    margin1 = margin1 + 60;
-                }
-
-                margin2 = margin2 + 60;
-            }
-            
+            DrawPieces(rows, columns);
 
             base.Draw(gameTime);
 
             spriteBatch.End();
         }
 
-        /********** Draw Methods **********/
 
-        //Standard draw
-        private void DrawSprite(float xpos, float ypos, Texture2D texture, Color color, float scale)
-        {
-            Vector2 DrawSprite = new Vector2(xpos, ypos);
-            spriteBatch.Draw(texture, DrawSprite, null, color, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
-        }
+        /*********************************** Methods ***********************************/
 
-        private bool Hover(float mouseX, float mouseY, float spriteX, float spriteY, int spriteWidth, int spriteHeight)
+        /********** Update **********/
+
+        //Point collision with box
+        private bool PointCollisionWithBox(float pointX, float pointY, float boxX, float boxY, int boxWidth, int boxHeight)
         {
-            if (mouseX >= spriteX && mouseX <= spriteX + spriteWidth && mouseY >= spriteY && mouseY <= spriteY + spriteHeight)
+            if (pointX > boxX && pointX < boxX + boxWidth && pointY > boxY && pointY < boxY + boxHeight)
             {
                 return true;
             }
@@ -176,5 +195,48 @@ namespace VikingChess
                 return false;
             }
         }
+
+        private void MovePiece()
+        {
+            throw new NotImplementedException();
+        }
+
+
+
+        /********** Draw **********/
+
+        //Draw sprite
+        private void DrawSprite(float xpos, float ypos, Texture2D texture, Color color, float scale)
+        {
+            Vector2 DrawSprite = new Vector2(xpos, ypos);
+            spriteBatch.Draw(texture, DrawSprite, null, color, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
+        }
+
+        //Draw pieces
+        private void DrawPieces(int numberOfRows, int numberOfColumns)
+        {
+            //Draw pieces
+            int margin2 = 20;
+
+            //Rows
+            for (int row = 0; row < numberOfRows; row++)
+            {
+                int margin1 = 20;
+
+                //Column
+                for (int column = 0; column < numberOfColumns; column++)
+                {
+                    if (board[row, column] != null)
+                    {
+                        DrawSprite(10 + margin1, 10 + margin2, spritePiece, Color.White, 0.04f);
+                    }
+
+                    margin1 = margin1 + 40;
+                }
+
+                margin2 = margin2 + 40;
+            }
+        }
+
     }
 }
