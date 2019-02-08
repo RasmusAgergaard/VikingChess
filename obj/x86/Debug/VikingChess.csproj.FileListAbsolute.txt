@@ -24,3 +24,6 @@ C:\Google drev\Main drive\Programming\Projects\VikingChess\obj\x86\Debug\VikingC
 C:\Google drev\Main drive\Programming\Projects\VikingChess\bin\Windows\x86\Debug\Content\piece.xnb
 C:\Google drev\Main drive\Programming\Projects\VikingChess\bin\Windows\x86\Debug\Content\board.xnb
 C:\Google drev\Main drive\Programming\Projects\VikingChess\bin\Windows\x86\Debug\Content\selected_ring.xnb
+C:\Google drev\Main drive\Programming\Projects\VikingChess\bin\Windows\x86\Debug\Content\piece_black.xnb
+C:\Google drev\Main drive\Programming\Projects\VikingChess\bin\Windows\x86\Debug\Content\piece_white.xnb
+C:\Google drev\Main drive\Programming\Projects\VikingChess\bin\Windows\x86\Debug\Content\legal_move.xnb

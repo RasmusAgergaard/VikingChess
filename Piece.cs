@@ -11,16 +11,12 @@ namespace VikingChess
 {
     class Piece
     {
+        public int myTeam;
+        
         //Constructor
-        public Piece()
+        public Piece(int team)
         {
-
-        }
-
-        //Move
-        public void Move()
-        {
-
+            myTeam = team;
         }
     }
 }
