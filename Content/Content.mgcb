@@ -61,6 +61,18 @@
 /processorParam:TextureFormat=Color
 /build:piece_black.png
 
+#begin piece_black_king.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:piece_black_king.png
+
 #begin piece_white.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -73,6 +85,18 @@
 /processorParam:TextureFormat=Color
 /build:piece_white.png
 
+#begin refuge.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:refuge.png
+
 #begin selected_ring.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -84,4 +108,11 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:selected_ring.png
+
+#begin turn.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:turn.spritefont
 

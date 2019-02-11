@@ -12,11 +12,17 @@ namespace VikingChess
     class Piece
     {
         public int myTeam;
+        public int myType;
         
         //Constructor
-        public Piece(int team)
+        public Piece(int team, int type)
         {
+            //Set team
             myTeam = team;
+
+            //Set type
+            myType = type;
+
         }
     }
 }
