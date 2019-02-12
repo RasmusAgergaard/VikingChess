@@ -84,7 +84,7 @@ namespace VikingChess
         private Piece pieceBlack4;
         private Piece pieceBlack5;
         private Piece pieceBlack6;
-        private Piece pieceBlack7;
+        private Piece pieceBlackKing;
         private Piece pieceBlack8;
         private Piece pieceBlack9;
         private Piece pieceBlack10;
@@ -154,7 +154,7 @@ namespace VikingChess
             pieceBlack4 = new Piece(2, 1);
             pieceBlack5 = new Piece(2, 1);
             pieceBlack6 = new Piece(2, 1);
-            pieceBlack7 = new Piece(2, 2); //KING
+            pieceBlackKing = new Piece(2, 2); //KING
             pieceBlack8 = new Piece(2, 1);
             pieceBlack9 = new Piece(2, 1);
             pieceBlack10 = new Piece(2, 1);
@@ -198,7 +198,7 @@ namespace VikingChess
             board[4, 6] = pieceBlack4;
             board[5, 3] = pieceBlack5;
             board[5, 4] = pieceBlack6;
-            board[5, 5] = pieceBlack7;
+            board[5, 5] = pieceBlackKing;
             board[5, 6] = pieceBlack8;
             board[5, 7] = pieceBlack9;
             board[6, 4] = pieceBlack10;
@@ -211,7 +211,7 @@ namespace VikingChess
             board[0, 10] = refuge;
             board[10, 0] = refuge;
             board[10, 10] = refuge;
-            //board[5, 5] = refuge;
+            //board[5, 5] aka the middle refuge is added another place - Good luck finding it!
 
             base.Initialize();
         }
@@ -254,79 +254,17 @@ namespace VikingChess
             //Place refuge when king is moved
             PlaceRefuge();
 
-            //Find legal moves
-            FindLegalMoves();
-
-            //Select and move pieces
-            for (int row = 0; row < boardRows; row++)
+            //White turn
+            if (currentGameState == gameState.whiteTurn)
             {
-                //Columns
-                for (int column = 0; column < boardColumns; column++)
-                {
-                    //Collision check
-                    if (PointCollisionWithBox(mousePoint.X, mousePoint.Y, boardX + (boardSquareSize * row), boardY + (boardSquareSize * column), boardSquareSize, boardSquareSize))
-                    {
-                        //Mouse click
-                        if (mouseState.LeftButton == ButtonState.Pressed && oldState.LeftButton == ButtonState.Released)
-                        {
-                            //Empty square
-                            if (board[column, row] == null && legalMoves[column, row] != null)
-                            {
-                                //If a piece is selected
-                                if (selectedPiece != null)
-                                {
-                                    //MovePiece
-                                    board[column, row] = selectedPiece;
-                                    board[selectedPieceColumn, selectedPieceRow] = null;
-                                    
-                                    //Save last move
-                                    lastMovedPieceColumn = column;
-                                    lastMovedPieceRow = row;
+                //AiRandomMove(1);
+                SelectAndMove(mouseState, mousePoint);
+            }
 
-                                    ChangeTurn();
-                                    DeselectPiece();
-                                }
-                            }
-                            //Not empty square
-                            else
-                            {
-                                //Deselect piece
-                                if (selectedPiece == board[column, row])
-                                {
-                                    DeselectPiece();
-                                }
-                                //Select piece
-                                else
-                                {
-                                    if (board[column, row] != null)
-                                    {
-                                        if (currentGameState == gameState.whiteTurn)
-                                        {
-                                            if (board[column, row].myTeam == 1)
-                                            {
-                                                selectedPiece = board[column, row];
-                                                selectedPieceRow = row;
-                                                selectedPieceColumn = column;
-                                            }
-                                        }
-                                        if (currentGameState == gameState.blackTurn)
-                                        {
-                                            if (board[column, row].myTeam == 2)
-                                            {
-                                                selectedPiece = board[column, row];
-                                                selectedPieceRow = row;
-                                                selectedPieceColumn = column;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        //Reassigns the old state so that it is ready for next time
-                        oldState = mouseState;
-                    }
-                }
+            //Black turn
+            if (currentGameState == gameState.blackTurn)
+            {
+                SelectAndMove(mouseState, mousePoint);
             }
 
             //Check win or loose conditions
@@ -337,7 +275,6 @@ namespace VikingChess
         }
 
 
-
         /*********************************** Draw ***********************************/
         protected override void Draw(GameTime gameTime)
         {
@@ -345,10 +282,6 @@ namespace VikingChess
 
             //Clear
             GraphicsDevice.Clear(Color.White);
-
-            //Update mouse
-            var mouseState = Mouse.GetState();
-            var mousePoint = new Point(mouseState.X, mouseState.Y);
 
             //Draw board
             DrawSprite(boardX, boardY, spriteBoard, Color.White, 1);
@@ -411,9 +344,134 @@ namespace VikingChess
             selectedPiece = null;
         }
 
-        private void MovePiece()
+        private void SelectAndMove(MouseState mouseState, Point mousePoint)
         {
-            
+            for (int row = 0; row < boardRows; row++)
+            {
+                //Columns
+                for (int column = 0; column < boardColumns; column++)
+                {
+                    //Collision check
+                    if (PointCollisionWithBox(mousePoint.X, mousePoint.Y, boardX + (boardSquareSize * row), boardY + (boardSquareSize * column), boardSquareSize, boardSquareSize))
+                    {
+                        //Mouse click
+                        if (mouseState.LeftButton == ButtonState.Pressed && oldState.LeftButton == ButtonState.Released)
+                        {
+                            //Empty square
+                            if (board[column, row] == null && legalMoves[column, row] != null)
+                            {
+                                //If a piece is selected
+                                if (selectedPiece != null)
+                                {
+                                    //MovePiece
+                                    board[column, row] = selectedPiece;
+                                    board[selectedPieceColumn, selectedPieceRow] = null;
+
+                                    //Save last move
+                                    lastMovedPieceColumn = column;
+                                    lastMovedPieceRow = row;
+
+                                    ChangeTurn();
+                                    DeselectPiece();
+                                }
+                            }
+                            //Not empty square
+                            else
+                            {
+                                //Deselect piece
+                                if (selectedPiece == board[column, row])
+                                {
+                                    DeselectPiece();
+                                }
+                                //Select piece
+                                else
+                                {
+                                    if (board[column, row] != null)
+                                    {
+                                        if (currentGameState == gameState.whiteTurn)
+                                        {
+                                            if (board[column, row].myTeam == 1)
+                                            {
+                                                selectedPiece = board[column, row];
+                                                selectedPieceRow = row;
+                                                selectedPieceColumn = column;
+                                                FindLegalMoves();
+                                            }
+                                        }
+                                        if (currentGameState == gameState.blackTurn)
+                                        {
+                                            if (board[column, row].myTeam == 2)
+                                            {
+                                                selectedPiece = board[column, row];
+                                                selectedPieceRow = row;
+                                                selectedPieceColumn = column;
+                                                FindLegalMoves();
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        //Reassigns the old state so that it is ready for next time
+                        oldState = mouseState;
+                    }
+                }
+            }
+        }
+
+        private void AiRandomMove(int AiTeam)
+        {
+            //Find random piece
+            while (true)
+            {
+                Random random = new Random();
+                int randomColumn = random.Next(boardColumns);
+                int randomRow = random.Next(boardRows);
+
+                //If the piece is not null, and is the right team
+                if (board[randomColumn, randomRow] != null && board[randomColumn, randomRow].myTeam == AiTeam)
+                {
+                    //Select the piece
+                    selectedPiece = board[randomColumn, randomRow];
+                    selectedPieceRow = randomRow;
+                    selectedPieceColumn = randomColumn;
+
+                    break;
+                }
+            }
+
+            //If a pice is selected
+            if (selectedPiece != null)
+            {
+                FindLegalMoves();
+
+                while (true)
+                {
+                    Random random = new Random();
+
+                    //Move
+                    int randomLegalMoveColumn = random.Next(boardColumns);
+                    int randomLegalMoveRow = random.Next(boardRows);
+
+                    if (board[randomLegalMoveColumn, randomLegalMoveRow] == null && legalMoves[randomLegalMoveColumn, randomLegalMoveRow] != null)
+                    {
+                        //MovePiece
+                        board[randomLegalMoveColumn, randomLegalMoveRow] = selectedPiece;
+                        board[selectedPieceColumn, selectedPieceRow] = null;
+
+                        //Save last move
+                        lastMovedPieceColumn = randomLegalMoveColumn;
+                        lastMovedPieceRow = randomLegalMoveRow;
+
+                        break;
+                    }
+                }
+            }
+
+            //Change turn
+            ChangeTurn();
+            DeselectPiece();
         }
 
         private void ChangeTurn()
