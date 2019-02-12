@@ -19,7 +19,7 @@ namespace VikingChess
         SpriteBatch spriteBatch;
 
         //Game
-        private enum gameState {whiteTurn, blackTurn, moving, fighting };
+        private enum gameState {whiteTurn, blackTurn, moving, fighting, whiteWin, blackWin };
         private gameState currentGameState;
         private gameState lastTurn;
 
@@ -46,8 +46,10 @@ namespace VikingChess
 
         //Selected piece
         private Piece selectedPiece;
-        private int selectedPieceRow;
         private int selectedPieceColumn;
+        private int selectedPieceRow;
+        private int lastMovedPieceColumn;
+        private int lastMovedPieceRow;
 
         //Piece whites
         private Piece pieceWhite1;
@@ -152,7 +154,7 @@ namespace VikingChess
             pieceBlack4 = new Piece(2, 1);
             pieceBlack5 = new Piece(2, 1);
             pieceBlack6 = new Piece(2, 1);
-            pieceBlack7 = new Piece(2, 2);
+            pieceBlack7 = new Piece(2, 2); //KING
             pieceBlack8 = new Piece(2, 1);
             pieceBlack9 = new Piece(2, 1);
             pieceBlack10 = new Piece(2, 1);
@@ -276,6 +278,10 @@ namespace VikingChess
                                     //MovePiece
                                     board[column, row] = selectedPiece;
                                     board[selectedPieceColumn, selectedPieceRow] = null;
+                                    
+                                    //Save last move
+                                    lastMovedPieceColumn = column;
+                                    lastMovedPieceRow = row;
 
                                     ChangeTurn();
                                     DeselectPiece();
@@ -303,7 +309,7 @@ namespace VikingChess
                                                 selectedPieceColumn = column;
                                             }
                                         }
-                                        else
+                                        if (currentGameState == gameState.blackTurn)
                                         {
                                             if (board[column, row].myTeam == 2)
                                             {
@@ -323,8 +329,14 @@ namespace VikingChess
                 }
             }
 
+            //Check win or loose conditions
+            WinCoditionCheck();
+
+            //Base update
             base.Update(gameTime);
         }
+
+
 
         /*********************************** Draw ***********************************/
         protected override void Draw(GameTime gameTime)
@@ -355,7 +367,22 @@ namespace VikingChess
             DrawPieces(boardRows, boardColumns);
 
             //Draw text
-            spriteBatch.DrawString(font, "GameState: " + currentGameState.ToString(), new Vector2(30, 480), Color.Black);
+            if (currentGameState == gameState.whiteTurn)
+            {
+                spriteBatch.DrawString(font, "Attackers turn (White)", new Vector2(30, 480), Color.Black);
+            }
+            if (currentGameState == gameState.blackTurn)
+            {
+                spriteBatch.DrawString(font, "Defenders turn (Black)", new Vector2(30, 480), Color.Black);
+            }
+            if (currentGameState == gameState.whiteWin)
+            {
+                spriteBatch.DrawString(font, "Attackers Win!", new Vector2(30, 480), Color.Black);
+            }
+            if (currentGameState == gameState.blackWin)
+            {
+                spriteBatch.DrawString(font, "Defenders Win!", new Vector2(30, 480), Color.Black);
+            }
 
             base.Draw(gameTime);
 
@@ -504,7 +531,7 @@ namespace VikingChess
         {
             if (lastTurn == lastTurnToCheck)
             {
-                //Loop though the pieces
+                //Row
                 for (int row = 0; row < boardRows; row++)
                 {
                     //Columns
@@ -512,20 +539,38 @@ namespace VikingChess
                     {
                         if (board[column, row] != null)
                         {
-                            //If the piece is black
+                            //If the piece is from the opposite team
                             if (board[column, row].myTeam == oppositeTeam)
                             {
+                                bool kingTakenColumn = false;
+                                bool kingTakenRow = false;
+
                                 //Column
                                 if (column > 0 && column < boardColumns - 1)
                                 {
                                     var checkColumn1 = board[column + 1, row];
                                     var checkColumn2 = board[column - 1, row];
 
+                                    //Null check
                                     if (checkColumn1 != null && checkColumn2 != null)
                                     {
+                                        //Is there a piece on both sides
                                         if ((checkColumn1.myTeam == team || checkColumn1.myTeam == 3) && (checkColumn2.myTeam == team || checkColumn2.myTeam == 3))
                                         {
-                                            KillPiece(column, row);
+                                            //Is one of them the last moved piece
+                                            if (column + 1 == lastMovedPieceColumn || column - 1 == lastMovedPieceColumn)
+                                            {
+                                                //Is the piece a king, then set varible
+                                                if (board[column, row].myType == 2)
+                                                {
+                                                    kingTakenColumn = true;
+                                                }
+                                                //If not - kill it
+                                                else
+                                                {
+                                                    KillPiece(column, row);
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -536,13 +581,33 @@ namespace VikingChess
                                     var checkRow1 = board[column, row + 1];
                                     var checkRow2 = board[column, row - 1];
 
+                                    //Null check
                                     if (checkRow1 != null && checkRow2 != null)
                                     {
+                                        //Is there a piece on both sides
                                         if ((checkRow1.myTeam == team || checkRow1.myTeam == 3) && (checkRow2.myTeam == team || checkRow2.myTeam == 3))
                                         {
-                                            KillPiece(column, row);
+                                            //Is one of them the last moved piece
+                                            if (row + 1 == lastMovedPieceRow || row - 1 == lastMovedPieceRow)
+                                            {                                            
+                                                //Is the piece a king, then set varible
+                                                if (board[column, row].myType == 2)
+                                                {
+                                                    kingTakenRow = true;
+                                                }
+                                                //If not - kill it
+                                                else
+                                                {
+                                                    KillPiece(column, row);
+                                                }
+                                            }
                                         }
                                     }
+                                }
+
+                                if (kingTakenColumn == true && kingTakenRow == true)
+                                {
+                                    KillKing();
                                 }
                             }
                         }
@@ -554,6 +619,106 @@ namespace VikingChess
         private void KillPiece(int column, int row)
         {
             board[column, row] = null;
+        }
+
+        //NOTE: This will remove all king types from the game...
+        private void KillKing()
+        {
+            //Row
+            for (int row = 0; row < boardRows; row++)
+            {
+                //Columns
+                for (int column = 0; column < boardColumns; column++)
+                {
+                    if (board[column, row] != null)
+                    {
+                        //If there is a king, remove it
+                        if (board[column, row].myType == 2)
+                        {
+                            board[column, row] = null;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void WinCoditionCheck()
+        {
+            WhiteWinCheck();
+            BlackWinCheck();
+        }
+
+        private void WhiteWinCheck()
+        {
+            bool doesKingExist = false;
+
+            //Row
+            for (int row = 0; row < boardRows; row++)
+            {
+                //Columns
+                for (int column = 0; column < boardColumns; column++)
+                {
+                    //Check if there is a king on the defenders team
+                    if (board[column, row] != null && board[column, row].myTeam == 2 && board[column, row].myType == 2)
+                    {
+                        doesKingExist = true;
+                    }
+                }
+            }
+
+            //If there is not king, the defenders loose, and the attackers win
+            if (doesKingExist == false)
+            {
+                currentGameState = gameState.whiteWin;
+            }
+        }
+
+        private void BlackWinCheck()
+        {
+            bool kingEscaped = false;
+            //Row
+            for (int row = 0; row < boardRows; row++)
+            {
+                //Columns
+                for (int column = 0; column < boardColumns; column++)
+                {
+                    //If it is the defenders king
+                    if (board[column, row] != null && board[column, row].myTeam == 2 && board[column, row].myType == 2)
+                    {
+                        //Check to see if he is next to a refuge
+                        //Top left
+                        if (board[column, row] == board[0, 1] || board[column, row] == board[1, 0])
+                        {
+                            kingEscaped = true;
+                        }
+
+                        //Top right
+                        if (board[column, row] == board[0, 9] || board[column, row] == board[1, 10])
+                        {
+                            kingEscaped = true;
+                        }
+
+                        //Bottom left
+                        if (board[column, row] == board[9, 0] || board[column, row] == board[10, 1])
+                        {
+                            kingEscaped = true;
+                        }
+
+                        //Bottom right
+                        if (board[column, row] == board[9, 10] || board[column, row] == board[10, 9])
+                        {
+                            kingEscaped = true;
+                        }
+                    }
+
+                }
+            }
+
+            //This king is next to one of the refuges, so the defenders win
+            if (kingEscaped == true)
+            {
+                currentGameState = gameState.blackWin;
+            }
         }
 
 
