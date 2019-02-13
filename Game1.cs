@@ -20,11 +20,13 @@ namespace VikingChess
         SpriteBatch spriteBatch;
 
         //Game
-        private enum gameState {whiteTurn, blackTurn, moving, fighting, whiteWin, blackWin };
+        private enum gameState {gameStart, whiteTurn, whiteMoveing, whiteFighting, blackTurn, blackMoveing, blackFighting, whiteWin, blackWin };
         private gameState currentGameState;
         private gameState lastTurn;
-        private bool pieceIsMovingX = true;
-        private bool pieceIsMovingY = true;
+        private bool whitePieceIsMovingX = true;
+        private bool whitePieceIsMovingY = true;
+        private bool blackPieceIsMovingX = true;
+        private bool blackPieceIsMovingY = true;
 
         //Sprites
         Texture2D spritePieceBlack;
@@ -114,8 +116,8 @@ namespace VikingChess
             this.IsMouseVisible = true;
 
             //Game
-            currentGameState = gameState.whiteTurn;
-            lastTurn = gameState.blackTurn;
+            currentGameState = gameState.gameStart;
+            //lastTurn = gameState.blackTurn;
 
             //Board
             board = new Piece[boardRows, boardColumns];
@@ -257,25 +259,56 @@ namespace VikingChess
             //Place refuge when king is moved
             PlaceRefuge();
 
-            if (pieceIsMovingX == false & pieceIsMovingY == false)
-            {
-                //White turn
-                if (currentGameState == gameState.whiteTurn)
-                {
-                    AiRandomAllan(1);
-                    //SelectAndMove(mouseState, mousePoint);
-                }
 
-                //Black turn
-                if (currentGameState == gameState.blackTurn)
+            //STATE - GameStart
+            if (currentGameState == gameState.gameStart)
+            {
+                currentGameState = gameState.whiteTurn;
+            }
+
+            //STATE - White turn
+            if (currentGameState == gameState.whiteTurn)
+            {
+                AiRandomAllan(1);
+            }
+
+            //STATE - White moving
+            if (currentGameState == gameState.whiteMoveing)
+            {
+                if (whitePieceIsMovingX == false && whitePieceIsMovingY == false)
                 {
-                    SelectAndMove(mouseState, mousePoint);
+                    currentGameState = gameState.whiteFighting;
                 }
             }
 
-            //Check for kills
-            KillCheck(gameState.whiteTurn, 2, 1);
-            KillCheck(gameState.blackTurn, 1, 2);
+            //STATE - White fighting
+            if (currentGameState == gameState.whiteFighting)
+            {
+                KillCheck(gameState.whiteTurn, 2, 1);
+                currentGameState = gameState.blackTurn;
+            }
+
+            //STATE - Black turn
+            if (currentGameState == gameState.blackTurn)
+            {
+                SelectAndMove(mouseState, mousePoint);
+            }
+
+            //STATE - Black moving
+            if (currentGameState == gameState.blackMoveing)
+            {
+                if (blackPieceIsMovingX == false && blackPieceIsMovingY == false)
+                {
+                    currentGameState = gameState.blackFighting;
+                }
+            }
+
+            //STATE - Black fighting
+            if (currentGameState == gameState.blackFighting)
+            {
+                KillCheck(gameState.blackTurn, 1, 2);
+                currentGameState = gameState.whiteTurn;
+            }
 
             //Check win or loose conditions
             WinCoditionCheck();
@@ -310,7 +343,8 @@ namespace VikingChess
             DrawPieces(boardRows, boardColumns);
 
             //Draw text
-            DrawText();
+            //DrawText();
+            spriteBatch.DrawString(font, currentGameState.ToString(), new Vector2(30, 480), Color.Black);
 
             //Base draw
             base.Draw(gameTime);
@@ -369,7 +403,7 @@ namespace VikingChess
                                     lastMovedPieceColumn = column;
                                     lastMovedPieceRow = row;
 
-                                    ChangeTurn();
+                                    currentGameState = gameState.blackMoveing;
                                     DeselectPiece();
                                 }
                             }
@@ -519,9 +553,6 @@ namespace VikingChess
                 //Move the selected piece
                 RandomMoveSelectedPiece();
 
-                //Change the turn
-                ChangeTurn();
-    
                 //And deselect the piece
                 DeselectPiece();
             }
@@ -564,6 +595,8 @@ namespace VikingChess
             //Save last move
             lastMovedPieceColumn = choosenColumn;
             lastMovedPieceRow = choosenRow;
+
+            currentGameState = gameState.whiteMoveing;
         }
 
         private void ChangeTurn()
@@ -898,8 +931,11 @@ namespace VikingChess
                         //White - Attackers
                         if (board[row, column].myTeam == 1)
                         {
-                            MoveDraw(row, column, posX, posY);
-
+                            if (currentGameState == gameState.whiteMoveing)
+                            {
+                                MoveDraw(row, column, posX, posY, 1);
+                            }
+                           
                             DrawSprite(board[row, column].drawX, board[row, column].drawY, spritePieceWhite, Color.White, 1f);
                         }
 
@@ -910,13 +946,13 @@ namespace VikingChess
                             //Normal
                             if (board[row, column].myType == 1)
                             {
-                                MoveDraw(row, column, posX, posY);
+                                MoveDraw(row, column, posX, posY, 2);
                                 DrawSprite(board[row, column].drawX, board[row, column].drawY, spritePieceBlack, Color.White, 1f);
                             }
                             //King
                             else
                             {
-                                MoveDraw(row, column, posX, posY);
+                                MoveDraw(row, column, posX, posY, 2);
                                 DrawSprite(board[row, column].drawX, board[row, column].drawY, spritePieceBlackKing, Color.White, 1f);
                             }
                         }
@@ -937,7 +973,7 @@ namespace VikingChess
         }
 
         //Move the drawn piece towards the real X position
-        private void MoveDraw(int row, int column, int posX, int posY)
+        private void MoveDraw(int row, int column, int posX, int posY, int team)
         {
             //X
             if (board[row, column].drawX != posX)
@@ -954,11 +990,26 @@ namespace VikingChess
                     board[row, column].drawX = board[row, column].drawX - pieceMoveSpeed;
                 }
 
-                pieceIsMovingX = true;
+                if (team == 1)
+                {
+                    whitePieceIsMovingX = true;
+                }
+                else
+                {
+                    blackPieceIsMovingX = true;
+                }
+
             }
             else
             {
-                pieceIsMovingX = false;
+                if (team == 1)
+                {
+                    whitePieceIsMovingX = false;
+                }
+                else
+                {
+                    blackPieceIsMovingX = false;
+                }
             }
 
             //Y
@@ -976,11 +1027,25 @@ namespace VikingChess
                     board[row, column].drawY = board[row, column].drawY - pieceMoveSpeed;
                 }
 
-                pieceIsMovingY = true;
+                if (team == 1)
+                {
+                    whitePieceIsMovingY = true;
+                }
+                else
+                {
+                    blackPieceIsMovingY = true;
+                }
             }
             else
             {
-                pieceIsMovingY = false;
+                if (team == 1)
+                {
+                    whitePieceIsMovingY = false;
+                }
+                else
+                {
+                    blackPieceIsMovingY = false;
+                }
             }
         }
 
