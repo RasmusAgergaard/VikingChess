@@ -11,12 +11,19 @@ namespace VikingChess
 {
     class Piece
     {
+        Random random = new Random();
+
         public int myTeam;
         public int myType;
+        public int drawX;
+        public int drawY;
         
         //Constructor
         public Piece(int team, int type)
         {
+            drawX = random.Next(500);
+            drawY = random.Next(500);
+
             //Set team
             myTeam = team;
 
