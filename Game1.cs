@@ -14,6 +14,8 @@ namespace VikingChess
         //System
         private MouseState oldState;
         private int pieceMoveSpeed = 1;
+        private bool isPiecesMoving = true;
+        private int turn = 1;
 
         //Graphics
         GraphicsDeviceManager graphics;
@@ -22,11 +24,6 @@ namespace VikingChess
         //Game
         private enum gameState {gameStart, whiteTurn, whiteMoveing, whiteFighting, blackTurn, blackMoveing, blackFighting, whiteWin, blackWin };
         private gameState currentGameState;
-        private gameState lastTurn;
-        private bool whitePieceIsMovingX = true;
-        private bool whitePieceIsMovingY = true;
-        private bool blackPieceIsMovingX = true;
-        private bool blackPieceIsMovingY = true;
 
         //Sprites
         Texture2D spritePieceBlack;
@@ -36,6 +33,12 @@ namespace VikingChess
         Texture2D spriteSelectedRing;
         Texture2D spriteLegalMove;
         Texture2D spriteRefuge;
+        Texture2D spriteKillSplash;
+
+        //Kill splash
+        private float KillSplashAlpha = 0;
+        private int KillSplashX = -100;
+        private int KillSplashY = -100;
 
         //Fonts
         private SpriteFont font;
@@ -53,8 +56,6 @@ namespace VikingChess
         private Piece selectedPiece;
         private int selectedPieceColumn;
         private int selectedPieceRow;
-        private int lastMovedPieceColumn;
-        private int lastMovedPieceRow;
 
         //Piece whites
         private Piece pieceWhite1;
@@ -234,6 +235,7 @@ namespace VikingChess
             spriteSelectedRing = Content.Load<Texture2D>("selected_ring");
             spriteLegalMove = Content.Load<Texture2D>("legal_move");
             spriteRefuge = Content.Load<Texture2D>("refuge");
+            spriteKillSplash = Content.Load<Texture2D>("kill_splash");
 
             //Fonts
             font = Content.Load<SpriteFont>("turn");
@@ -259,11 +261,16 @@ namespace VikingChess
             //Place refuge when king is moved
             PlaceRefuge();
 
+            //Move the drawn positions, if there is any to move
+            isPiecesMoving = MoveDraw();
 
             //STATE - GameStart
             if (currentGameState == gameState.gameStart)
             {
-                currentGameState = gameState.whiteTurn;
+                if (isPiecesMoving == false)
+                {
+                    currentGameState = gameState.whiteTurn;
+                }
             }
 
             //STATE - White turn
@@ -275,7 +282,7 @@ namespace VikingChess
             //STATE - White moving
             if (currentGameState == gameState.whiteMoveing)
             {
-                if (whitePieceIsMovingX == false && whitePieceIsMovingY == false)
+                if (isPiecesMoving == false)
                 {
                     currentGameState = gameState.whiteFighting;
                 }
@@ -284,8 +291,11 @@ namespace VikingChess
             //STATE - White fighting
             if (currentGameState == gameState.whiteFighting)
             {
-                KillCheck(gameState.whiteTurn, 2, 1);
+                KillCheck(2, 1);
                 currentGameState = gameState.blackTurn;
+
+                //Change turn
+                turn = turn + 1;
             }
 
             //STATE - Black turn
@@ -297,7 +307,7 @@ namespace VikingChess
             //STATE - Black moving
             if (currentGameState == gameState.blackMoveing)
             {
-                if (blackPieceIsMovingX == false && blackPieceIsMovingY == false)
+                if (isPiecesMoving == false)
                 {
                     currentGameState = gameState.blackFighting;
                 }
@@ -306,8 +316,11 @@ namespace VikingChess
             //STATE - Black fighting
             if (currentGameState == gameState.blackFighting)
             {
-                KillCheck(gameState.blackTurn, 1, 2);
+                KillCheck(1, 2);
                 currentGameState = gameState.whiteTurn;
+
+                //Change turn
+                turn = turn + 1;
             }
 
             //Check win or loose conditions
@@ -342,9 +355,13 @@ namespace VikingChess
             //Draw pieces
             DrawPieces(boardRows, boardColumns);
 
+            //Draw kill splash
+            DrawKillSplash();
+
             //Draw text
             //DrawText();
-            spriteBatch.DrawString(font, currentGameState.ToString(), new Vector2(30, 480), Color.Black);
+            spriteBatch.DrawString(font, "Game state: " + currentGameState.ToString(), new Vector2(30, 480), Color.Black);
+            spriteBatch.DrawString(font, "Turn: " + turn.ToString(), new Vector2(30, 510), Color.Black);
 
             //Base draw
             base.Draw(gameTime);
@@ -398,11 +415,9 @@ namespace VikingChess
                                     //MovePiece
                                     board[column, row] = selectedPiece;
                                     board[selectedPieceColumn, selectedPieceRow] = null;
+                                    board[column, row].movedInTurn = turn;
 
-                                    //Save last move
-                                    lastMovedPieceColumn = column;
-                                    lastMovedPieceRow = row;
-
+                                    isPiecesMoving = true;
                                     currentGameState = gameState.blackMoveing;
                                     DeselectPiece();
                                 }
@@ -591,31 +606,11 @@ namespace VikingChess
             //Move the choosen piece
             board[choosenColumn, choosenRow] = selectedPiece;
             board[selectedPieceColumn, selectedPieceRow] = null;
+            board[choosenColumn, choosenRow].movedInTurn = turn;
 
-            //Save last move
-            lastMovedPieceColumn = choosenColumn;
-            lastMovedPieceRow = choosenRow;
-
+            //Change turn
+            isPiecesMoving = true;
             currentGameState = gameState.whiteMoveing;
-        }
-
-        private void ChangeTurn()
-        {
-            if (currentGameState != gameState.whiteWin || currentGameState != gameState.blackWin)
-            {
-                //Save last turn
-                lastTurn = currentGameState;
-
-                //Start new turn
-                if (lastTurn == gameState.whiteTurn)
-                {
-                    currentGameState = gameState.blackTurn;
-                }
-                else
-                {
-                    currentGameState = gameState.whiteTurn;
-                }
-            }
         }
 
         private void PlaceRefuge()
@@ -705,97 +700,97 @@ namespace VikingChess
             }
         }
 
-        private void KillCheck(gameState lastTurnToCheck, int oppositeTeam, int team)
+        private void KillCheck(int oppositeTeam, int myTeam)
         {
-            if (lastTurn == lastTurnToCheck)
+            //Row
+            for (int row = 0; row < boardRows; row++)
             {
-                //Row
-                for (int row = 0; row < boardRows; row++)
+                //Columns
+                for (int column = 0; column < boardColumns; column++)
                 {
-                    //Columns
-                    for (int column = 0; column < boardColumns; column++)
+                    if (board[column, row] != null)
                     {
-                        if (board[column, row] != null)
+                        //If the piece is from the opposite team
+                        if (board[column, row].myTeam == oppositeTeam)
                         {
-                            //If the piece is from the opposite team
-                            if (board[column, row].myTeam == oppositeTeam)
+                            bool kingTakenColumn = false;
+                            bool kingTakenRow = false;
+
+                            //Column
+                            if (column > 0 && column < boardColumns - 1)
                             {
-                                bool kingTakenColumn = false;
-                                bool kingTakenRow = false;
+                                var checkColumn1 = board[column + 1, row];
+                                var checkColumn2 = board[column - 1, row];
 
-                                //Column
-                                if (column > 0 && column < boardColumns - 1)
+                                //Null check
+                                if (checkColumn1 != null && checkColumn2 != null)
                                 {
-                                    var checkColumn1 = board[column + 1, row];
-                                    var checkColumn2 = board[column - 1, row];
-
-                                    //Null check
-                                    if (checkColumn1 != null && checkColumn2 != null)
+                                    //Is there a piece on both sides
+                                    if ((checkColumn1.myTeam == myTeam || checkColumn1.myTeam == 3) && (checkColumn2.myTeam == myTeam || checkColumn2.myTeam == 3))
                                     {
-                                        //Is there a piece on both sides
-                                        if ((checkColumn1.myTeam == team || checkColumn1.myTeam == 3) && (checkColumn2.myTeam == team || checkColumn2.myTeam == 3))
+                                        //Is one of them was moved in the same turn
+                                        if (checkColumn1.movedInTurn == turn || checkColumn2.movedInTurn == turn)
                                         {
-                                            //Is one of them the last moved piece
-                                            if (column + 1 == lastMovedPieceColumn || column - 1 == lastMovedPieceColumn)
+                                            //Is the piece a king, then set varible
+                                            if (board[column, row].myType == 2)
                                             {
-                                                //Is the piece a king, then set varible
-                                                if (board[column, row].myType == 2)
-                                                {
-                                                    kingTakenColumn = true;
-                                                }
-                                                //If not - kill it
-                                                else
-                                                {
-                                                    KillPiece(column, row);
-                                                }
+                                                kingTakenColumn = true;
+                                            }
+                                            //If not - kill it
+                                            else
+                                            {
+                                                KillPiece(column, row);
                                             }
                                         }
                                     }
                                 }
+                            }
 
-                                //Row
-                                if (row > 0 && row < boardRows - 1)
+                            //Row
+                            if (row > 0 && row < boardRows - 1)
+                            {
+                                var checkRow1 = board[column, row + 1];
+                                var checkRow2 = board[column, row - 1];
+
+                                //Null check
+                                if (checkRow1 != null && checkRow2 != null)
                                 {
-                                    var checkRow1 = board[column, row + 1];
-                                    var checkRow2 = board[column, row - 1];
-
-                                    //Null check
-                                    if (checkRow1 != null && checkRow2 != null)
+                                    //Is there a piece on both sides
+                                    if ((checkRow1.myTeam == myTeam || checkRow1.myTeam == 3) && (checkRow2.myTeam == myTeam || checkRow2.myTeam == 3))
                                     {
-                                        //Is there a piece on both sides
-                                        if ((checkRow1.myTeam == team || checkRow1.myTeam == 3) && (checkRow2.myTeam == team || checkRow2.myTeam == 3))
-                                        {
-                                            //Is one of them the last moved piece
-                                            if (row + 1 == lastMovedPieceRow || row - 1 == lastMovedPieceRow)
-                                            {                                            
-                                                //Is the piece a king, then set varible
-                                                if (board[column, row].myType == 2)
-                                                {
-                                                    kingTakenRow = true;
-                                                }
-                                                //If not - kill it
-                                                else
-                                                {
-                                                    KillPiece(column, row);
-                                                }
+                                        //Is one of them the last moved piece
+                                        if (checkRow1.movedInTurn == turn || checkRow2.movedInTurn == turn)
+                                        {                                            
+                                            //Is the piece a king, then set varible
+                                            if (board[column, row].myType == 2)
+                                            {
+                                                kingTakenRow = true;
+                                            }
+                                            //If not - kill it
+                                            else
+                                            {
+                                                KillPiece(column, row);
                                             }
                                         }
                                     }
                                 }
+                            }
 
-                                if (kingTakenColumn == true && kingTakenRow == true)
-                                {
-                                    KillKing();
-                                }
+                            if (kingTakenColumn == true && kingTakenRow == true)
+                            {
+                                KillKing();
                             }
                         }
                     }
                 }
             }
+            
         }
 
         private void KillPiece(int column, int row)
         {
+            KillSplashX = board[column, row].posX;
+            KillSplashY = board[column, row].posY;
             board[column, row] = null;
         }
 
@@ -822,8 +817,11 @@ namespace VikingChess
 
         private void WinCoditionCheck()
         {
-            WhiteWinCheck();
-            BlackWinCheck();
+            if (isPiecesMoving == false)
+            {
+                WhiteWinCheck();
+                BlackWinCheck();
+            }
         }
 
         private void WhiteWinCheck()
@@ -899,6 +897,62 @@ namespace VikingChess
             }
         }
 
+        //Move the drawn position towards the real position
+        private bool MoveDraw()
+        {
+            bool aPiceIsMoving = false;
+
+            for (int row = 0; row < boardRows; row++)
+            {
+                //Columns
+                for (int column = 0; column < boardColumns; column++)
+                {
+                    if (board[row, column] != null)
+                    {
+                        //X
+                        if (board[row, column].drawX != board[row, column].posX)
+                        {
+                            //Set bool
+                            aPiceIsMoving = true;
+
+                            //Move left
+                            if (board[row, column].drawX < board[row, column].posX)
+                            {
+                                board[row, column].drawX = board[row, column].drawX + pieceMoveSpeed;
+                            }
+
+                            //Move right
+                            if (board[row, column].drawX > board[row, column].posX)
+                            {
+                                board[row, column].drawX = board[row, column].drawX - pieceMoveSpeed;
+                            }
+                        }
+
+                        //Y
+                        if (board[row, column].drawY != board[row, column].posY)
+                        {
+                            //Set bool
+                            aPiceIsMoving = true;
+
+                            //Move down
+                            if (board[row, column].drawY < board[row, column].posY)
+                            {
+                                board[row, column].drawY = board[row, column].drawY + pieceMoveSpeed;
+                            }
+
+                            //Move up
+                            if (board[row, column].drawY > board[row, column].posY)
+                            {
+                                board[row, column].drawY = board[row, column].drawY - pieceMoveSpeed;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return aPiceIsMoving;
+        }
+
 
         /********** Draw **********/
 
@@ -928,14 +982,14 @@ namespace VikingChess
                         int posX = 10 + margin1;
                         int posY = 10 + margin2;
 
+                        //Set piece position. Note, this is just to have something to check
+                        board[row, column].posX = posX;
+                        board[row, column].posY = posY;
+
                         //White - Attackers
                         if (board[row, column].myTeam == 1)
                         {
-                            if (currentGameState == gameState.whiteMoveing)
-                            {
-                                MoveDraw(row, column, posX, posY, 1);
-                            }
-                           
+                            //Draw at the draw position
                             DrawSprite(board[row, column].drawX, board[row, column].drawY, spritePieceWhite, Color.White, 1f);
                         }
 
@@ -946,13 +1000,13 @@ namespace VikingChess
                             //Normal
                             if (board[row, column].myType == 1)
                             {
-                                MoveDraw(row, column, posX, posY, 2);
+                                //Draw at the draw position
                                 DrawSprite(board[row, column].drawX, board[row, column].drawY, spritePieceBlack, Color.White, 1f);
                             }
                             //King
                             else
                             {
-                                MoveDraw(row, column, posX, posY, 2);
+                                //Draw at the draw position
                                 DrawSprite(board[row, column].drawX, board[row, column].drawY, spritePieceBlackKing, Color.White, 1f);
                             }
                         }
@@ -969,83 +1023,6 @@ namespace VikingChess
                 }
 
                 margin2 = margin2 + 40;
-            }
-        }
-
-        //Move the drawn piece towards the real X position
-        private void MoveDraw(int row, int column, int posX, int posY, int team)
-        {
-            //X
-            if (board[row, column].drawX != posX)
-            {
-                //Move left
-                if (board[row, column].drawX < posX)
-                {
-                    board[row, column].drawX = board[row, column].drawX + pieceMoveSpeed;
-                }
-
-                //Move right
-                if (board[row, column].drawX > posX)
-                {
-                    board[row, column].drawX = board[row, column].drawX - pieceMoveSpeed;
-                }
-
-                if (team == 1)
-                {
-                    whitePieceIsMovingX = true;
-                }
-                else
-                {
-                    blackPieceIsMovingX = true;
-                }
-
-            }
-            else
-            {
-                if (team == 1)
-                {
-                    whitePieceIsMovingX = false;
-                }
-                else
-                {
-                    blackPieceIsMovingX = false;
-                }
-            }
-
-            //Y
-            if (board[row, column].drawY != posY)
-            {
-                //Move down
-                if (board[row, column].drawY < posY)
-                {
-                    board[row, column].drawY = board[row, column].drawY + pieceMoveSpeed;
-                }
-
-                //Move up
-                if (board[row, column].drawY > posY)
-                {
-                    board[row, column].drawY = board[row, column].drawY - pieceMoveSpeed;
-                }
-
-                if (team == 1)
-                {
-                    whitePieceIsMovingY = true;
-                }
-                else
-                {
-                    blackPieceIsMovingY = true;
-                }
-            }
-            else
-            {
-                if (team == 1)
-                {
-                    whitePieceIsMovingY = false;
-                }
-                else
-                {
-                    blackPieceIsMovingY = false;
-                }
             }
         }
 
@@ -1094,6 +1071,11 @@ namespace VikingChess
             {
                 spriteBatch.DrawString(font, "Defenders Win!", new Vector2(30, 480), Color.Black);
             }
+        }
+
+        private void DrawKillSplash()
+        {
+            DrawSprite(KillSplashX, KillSplashY, spriteKillSplash, Color.White, 1f);
         }
 
     }

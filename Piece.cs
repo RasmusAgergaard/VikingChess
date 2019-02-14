@@ -15,19 +15,21 @@ namespace VikingChess
 
         public int myTeam;
         public int myType;
+        public int posX;
+        public int posY;
         public int drawX;
         public int drawY;
+        public int movedInTurn;
         
         //Constructor
         public Piece(int team, int type)
         {
             drawX = random.Next(500);
             drawY = random.Next(500);
+            movedInTurn = 0;
 
-            //Set team
+            //Set
             myTeam = team;
-
-            //Set type
             myType = type;
 
         }

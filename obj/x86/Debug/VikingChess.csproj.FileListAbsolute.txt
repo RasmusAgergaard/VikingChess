@@ -30,3 +30,4 @@ C:\Google drev\Main drive\Programming\Projects\VikingChess\bin\Windows\x86\Debug
 C:\Google drev\Main drive\Programming\Projects\VikingChess\bin\Windows\x86\Debug\Content\piece_black_king.xnb
 C:\Google drev\Main drive\Programming\Projects\VikingChess\bin\Windows\x86\Debug\Content\turn.xnb
 C:\Google drev\Main drive\Programming\Projects\VikingChess\bin\Windows\x86\Debug\Content\refuge.xnb
+C:\Google drev\Main drive\Programming\Projects\VikingChess\bin\Windows\x86\Debug\Content\kill_splash.xnb

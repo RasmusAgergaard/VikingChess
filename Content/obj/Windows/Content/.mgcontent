@@ -5,6 +5,7 @@
   <Config />
   <SourceFiles>
     <File>C:/Google drev/Main drive/Programming/Projects/VikingChess/Content/board.png</File>
+    <File>C:/Google drev/Main drive/Programming/Projects/VikingChess/Content/kill_splash.png</File>
     <File>C:/Google drev/Main drive/Programming/Projects/VikingChess/Content/legal_move.png</File>
     <File>C:/Google drev/Main drive/Programming/Projects/VikingChess/Content/piece.png</File>
     <File>C:/Google drev/Main drive/Programming/Projects/VikingChess/Content/piece_black.png</File>
@@ -15,6 +16,7 @@
     <File>C:/Google drev/Main drive/Programming/Projects/VikingChess/Content/turn.spritefont</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
