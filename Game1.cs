@@ -276,7 +276,8 @@ namespace VikingChess
             //STATE - White turn
             if (currentGameState == gameState.whiteTurn)
             {
-                AiRandomAllan(1);
+                AiRandomAllan(AiTeam: 1);
+                //AiAdamTheKiller();
             }
 
             //STATE - White moving
@@ -467,7 +468,7 @@ namespace VikingChess
             }
         }
 
-        //AI
+        //AI - Random Allan
         private void AiRandomAllan(int AiTeam)
         {
             //Find and select a random piece
@@ -483,7 +484,7 @@ namespace VikingChess
             //DeselectPiece();
         }
 
-        //AI
+        //AI - Random Allan
         private void FindAndSelectRandomPiece(int AiTeam)
         {
             //Find all the pieces, and add them to the list
@@ -573,7 +574,7 @@ namespace VikingChess
             }
         }
 
-        //AI
+        //AI - Random Allan
         private void RandomMoveSelectedPiece()
         {
             FindLegalMoves();
@@ -611,6 +612,102 @@ namespace VikingChess
             //Change turn
             isPiecesMoving = true;
             currentGameState = gameState.whiteMoveing;
+        }
+
+        //AI - Adam the Killer
+        private void AiAdamTheKiller()
+        {
+            FindPiecesAndLegalMoves(AiTeam: 1);
+        }
+
+        //AI - Adam the Killer
+        private void FindPiecesAndLegalMoves(int AiTeam)
+        {
+            //Find all the pieces, and add them to the list
+            List<int> piecesThatHaveLegalMovesColumn = new List<int>();
+            List<int> piecesThatHaveLegalMovesRow = new List<int>();
+            Random random = new Random();
+
+            int numberOfPiecesThatCanMove = 0;
+
+            //Row
+            for (int row = 0; row < boardRows; row++)
+            {
+                //Columns
+                for (int column = 0; column < boardColumns; column++)
+                {
+                    //Select the piece
+                    selectedPiece = board[column, row];
+                    selectedPieceColumn = column;
+                    selectedPieceRow = row;
+
+                    //Find the legal moves
+                    FindLegalMoves();
+
+                    //Run though legal moves
+                    bool isThereAlegalMove = false;
+
+                    //Row
+                    for (int legalRow = 0; legalRow < boardRows; legalRow++)
+                    {
+                        //Columns
+                        for (int legalColumn = 0; legalColumn < boardColumns; legalColumn++)
+                        {
+                            if (legalMoves[legalColumn, legalRow] != null)
+                            {
+                                isThereAlegalMove = true;
+                            }
+                        }
+                    }
+
+                    //If the selected piece can move
+                    if (isThereAlegalMove == true)
+                    {
+                        //If it is not null, and is the right team - Add to list
+                        if (board[column, row] != null && board[column, row].myTeam == AiTeam)
+                        {
+                            //Add to list
+                            piecesThatHaveLegalMovesColumn.Add(column);
+                            piecesThatHaveLegalMovesRow.Add(row);
+
+                            //Add to the count
+                            numberOfPiecesThatCanMove = numberOfPiecesThatCanMove + 1;
+                        }
+                    }
+                }
+            }
+
+            //If there is no pieces that can move, the other team wins
+            if (numberOfPiecesThatCanMove == 0)
+            {
+                if (AiTeam == 1)
+                {
+                    currentGameState = gameState.blackWin;
+                }
+                if (AiTeam == 2)
+                {
+                    currentGameState = gameState.whiteWin;
+                }
+            }
+            //If there is a piece that can move, pick one and select it
+            else
+            {
+                //Pick a random place in list, and extract the column and row from it
+                int randomPlaceInList = random.Next(piecesThatHaveLegalMovesColumn.Count);
+                int choosenColumn = piecesThatHaveLegalMovesColumn[randomPlaceInList];
+                int choosenRow = piecesThatHaveLegalMovesRow[randomPlaceInList];
+
+                //Select the choosen piece
+                selectedPiece = board[choosenColumn, choosenRow];
+                selectedPieceColumn = choosenColumn;
+                selectedPieceRow = choosenRow;
+
+                //Move the selected piece
+                RandomMoveSelectedPiece();
+
+                //And deselect the piece
+                DeselectPiece();
+            }
         }
 
         private void PlaceRefuge()
