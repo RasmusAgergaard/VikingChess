@@ -969,16 +969,16 @@ namespace VikingChess
         /********** Adam the Killer **********/
         private void AiAdamTheKiller()
         {
-            //Kill King
-            if (false){}
-
             //Kill normal piece
-            else if (MoveToKillPosition(myTeam: 1, enemyTeam: 2, enemyType: 1)) { }
+            if (MoveToKillPosition(myTeam: 1, enemyTeam: 2, enemyType: 1)) { }
 
             //Move next to king
             else if (MoveNextToPiece(myTeam: 1, enemyTeam: 2, enemyType: 2)){}
 
-            //Block the kings movement
+            //Block kings movement towards refuges
+
+            //Block kings movement
+            else if (BlockKingMovement(myTeam: 1, enemyTeam: 2, enemyType: 2)) { }
 
             //Move next to normal piece
             else if (MoveNextToPiece(myTeam: 1, enemyTeam: 2, enemyType: 1)){}
@@ -1095,6 +1095,81 @@ namespace VikingChess
             return false;
         }
 
+        private bool BlockKingMovement(int myTeam, int enemyTeam, int enemyType)
+        {
+            Piece[,] kingLegalMoves = new Piece[boardRows, boardColumns];
+
+            //Find and select the king
+            FindAndSelectPiece(enemyTeam, enemyType);
+            //Find his legal moves
+            FindLegalMoves();
+            //Save them
+            kingLegalMoves = legalMoves;
+
+            //Row
+            for (int row = 0; row < boardRows; row++)
+            {
+                //Columns
+                for (int column = 0; column < boardColumns; column++)
+                {
+                    //Make sure there is a piece and check team
+                    if (board[column, row] != null && board[column, row].myTeam == myTeam)
+                    {
+                        //Select the piece
+                        selectedPiece = board[column, row];
+                        selectedPieceColumn = column;
+                        selectedPieceRow = row;
+
+                        //Find the legal moves
+                        FindLegalMoves();
+
+                        //Row
+                        for (int legalRow = 0; legalRow < boardRows; legalRow++)
+                        {
+                            //Columns
+                            for (int legalColumn = 0; legalColumn < boardColumns; legalColumn++)
+                            {
+                                //If there is a legal move, and the king have a legal move on the same spot - move there
+                                if (legalMoves[legalColumn, legalRow] != null && kingLegalMoves[legalColumn, legalRow] != null)
+                                {
+                                    MovePiece(legalColumn, legalRow);
+                                    AiLog = "Block king move";
+
+                                    //Change turn
+                                    isPiecesMoving = true;
+                                    currentGameState = gameState.whiteMoveing;
+                                    DeselectPiece();
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private void FindAndSelectPiece(int team, int type)
+        {
+            //Row
+            for (int row = 0; row < boardRows; row++)
+            {
+                //Columns
+                for (int column = 0; column < boardColumns; column++)
+                {
+                    //Not null, and the right team and type
+                    if (board[column, row] != null && board[column, row].myTeam == team && board[column, row].myType == type)
+                    {
+                        //Select the piece
+                        selectedPiece = board[column, row];
+                        selectedPieceColumn = column;
+                        selectedPieceRow = row;
+                    }
+                }
+            }
+        }
+
         private bool EnemyIsNextToSquare(int legalRow, int legalColumn, int enemyTeam, int enemyType)
         {
             if (legalColumn > 0 && legalColumn < boardColumns - 1)
@@ -1104,13 +1179,13 @@ namespace VikingChess
 
                 if (checkSquare1 != null && checkSquare1.myTeam == enemyTeam && checkSquare1.myType == enemyType)
                 {
-                    AiLog = "Move next to square - Column - EnemyType: " + enemyType.ToString();
+                    AiLog = "Move next to square - Type: " + enemyType.ToString();
                     return true;
                 }
 
                 if (checkSquare4 != null && checkSquare4.myTeam == enemyTeam && checkSquare4.myType == enemyType)
                 {
-                    AiLog = "Move next to square - Column - EnemyType: " + enemyType.ToString();
+                    AiLog = "Move next to square - Type: " + enemyType.ToString();
                     return true;
                 }
             }
@@ -1122,13 +1197,13 @@ namespace VikingChess
 
                 if (checkSquare2 != null && checkSquare2.myTeam == enemyTeam && checkSquare2.myType == enemyType)
                 {
-                    AiLog = "Move next to square - Row - EnemyType: " + enemyType.ToString();
+                    AiLog = "Move next to square - Type: " + enemyType.ToString();
                     return true;
                 }
 
                 if (checkSquare3 != null && checkSquare3.myTeam == enemyTeam && checkSquare3.myType == enemyType)
                 {
-                    AiLog = "Move next to square - Row - EnemyType: " + enemyType.ToString();
+                    AiLog = "Move next to square - Type: " + enemyType.ToString();
                     return true;
                 }
             }
