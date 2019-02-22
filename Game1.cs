@@ -12,6 +12,8 @@ namespace VikingChess
     public class Game1 : Game
     {
         //System
+        private int windowHeight = 540;
+        private int windowWidth = 960;
         private MouseState oldState;
         private int pieceMoveSpeed = 1;
         private bool isPiecesMoving = true;
@@ -20,6 +22,20 @@ namespace VikingChess
         //Graphics
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+
+        //Camera
+        private ResolutionIndependentRenderer _resolutionIndependence;
+        private Camera2D _camera;
+        private SpriteFont _debugFont;
+        private Texture2D _bkg;
+        private Vector2 _bkgPos;
+        private InputHelper _inputHelper;
+        private Vector2 _screenMousePos;
+        private Vector2 _mouseDrawPos;
+        private float _rotationDiff = 0.02f;
+        private float _zoomDiff = 0.02f;
+        private Vector2 _instructionsDrawPos;
+        private string _instructions = "Use (+/-) to Zoom  And (Shift +/-) to Rotate. (R to reset)";
 
         //Game
         private enum gameState {gameStart, whiteTurn, whiteMoveing, whiteFighting, blackTurn, blackMoveing, blackFighting, whiteWin, blackWin };
@@ -107,8 +123,10 @@ namespace VikingChess
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
-            graphics.PreferredBackBufferWidth = 500;
-            graphics.PreferredBackBufferHeight = 600;
+            _resolutionIndependence = new ResolutionIndependentRenderer(this);
+            _inputHelper = new InputHelper();
+            graphics.PreferredBackBufferWidth = windowWidth;
+            graphics.PreferredBackBufferHeight = windowHeight;
             graphics.ApplyChanges();
             Content.RootDirectory = "Content";
         }
@@ -121,6 +139,7 @@ namespace VikingChess
             //Game
             currentGameState = gameState.gameStart;
             //lastTurn = gameState.blackTurn;
+
 
             //Board
             board = new Piece[boardRows, boardColumns];
@@ -229,6 +248,24 @@ namespace VikingChess
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            //Camera
+            _camera = new Camera2D(_resolutionIndependence);
+            _camera.Zoom = 0.5f;
+            _camera.Position = new Vector2(_resolutionIndependence.VirtualWidth / 2, _resolutionIndependence.VirtualHeight / 2);
+
+            InitializeResolutionIndependence(graphics.GraphicsDevice.Viewport.Width, graphics.GraphicsDevice.Viewport.Height);
+
+            _mouseDrawPos.X = 700;
+            _mouseDrawPos.Y = 40f;
+
+            _instructionsDrawPos.X = 600;
+            _instructionsDrawPos.Y = 10f;
+
+            _debugFont = Content.Load<SpriteFont>(@"font");
+            _bkg = Content.Load<Texture2D>(@"board");
+            _bkgPos = new Vector2(0,0);
+
+
             //Sprites
             spritePieceBlack = Content.Load<Texture2D>("piece_black");
             spritePieceBlackKing = Content.Load<Texture2D>("piece_black_king");
@@ -241,6 +278,17 @@ namespace VikingChess
 
             //Fonts
             font = Content.Load<SpriteFont>("turn");
+        }
+
+        private void InitializeResolutionIndependence(int realScreenWidth, int realScreenHeight)
+        {
+            _resolutionIndependence.VirtualWidth = 960;
+            _resolutionIndependence.VirtualHeight = 540;
+            _resolutionIndependence.ScreenWidth = realScreenWidth;
+            _resolutionIndependence.ScreenHeight = realScreenHeight;
+            _resolutionIndependence.Initialize();
+
+            _camera.RecalculateTransformationMatrices();
         }
 
         protected override void UnloadContent()
@@ -256,9 +304,36 @@ namespace VikingChess
                 Exit();
             }
 
+            //Camera control
+            _inputHelper.Update();
+
+            _screenMousePos = _resolutionIndependence.ScaleMouseToScreenCoordinates(_inputHelper.MousePosition);
+
+            if (_inputHelper.IsCurPress(Keys.Add))
+            {
+                if (_inputHelper.IsCurPress(Keys.LeftShift))
+                    _camera.Rotation += _rotationDiff;
+                else
+                    _camera.Zoom += _zoomDiff;
+            }
+            else if (_inputHelper.IsCurPress(Keys.Subtract))
+            {
+                if (_inputHelper.IsCurPress(Keys.LeftShift))
+                    _camera.Rotation -= _rotationDiff;
+                else
+                    _camera.Zoom -= _zoomDiff;
+            }
+            else if (_inputHelper.IsNewPress(Keys.R))
+            {
+                _camera.Zoom = 1;
+                _camera.Rotation = 0;
+            }
+
+
             //Update mouse
             var mouseState = Mouse.GetState();
             var mousePoint = new Point(mouseState.X, mouseState.Y);
+            
 
             //Place refuge when king is moved
             PlaceRefuge();
@@ -337,13 +412,21 @@ namespace VikingChess
         /*********************************** Draw ***********************************/
         protected override void Draw(GameTime gameTime)
         {
-            spriteBatch.Begin();
+            //spriteBatch.Begin();
 
             //Clear
-            GraphicsDevice.Clear(Color.White);
+            //GraphicsDevice.Clear(Color.White);
 
+            //Camera
+            _resolutionIndependence.BeginDraw();
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, DepthStencilState.None, RasterizerState.CullNone, null, _camera.GetViewTransformationMatrix());
+            spriteBatch.Draw(_bkg, _bkgPos, Color.White);
+            spriteBatch.DrawString(_debugFont, string.Format("Translated Mouse Pos: x:{0:0}  y:{1:0}", _screenMousePos.X, _screenMousePos.Y), _mouseDrawPos, Color.Black);
+            spriteBatch.DrawString(_debugFont, _instructions, _instructionsDrawPos, Color.Yellow);
+            
             //Draw board
-            DrawSprite(boardX, boardY, spriteBoard, Color.White, 1);
+            //DrawSprite(boardX, boardY, spriteBoard, Color.White, new Rectangle(0, 0, 200, 200));
+            //spriteBatch.Draw(spriteBoard, Vector2.Zero, new Rectangle(0, 0, 200, 200), Color.White);
 
             //Selected piece
             if (selectedPiece != null)
@@ -1288,6 +1371,14 @@ namespace VikingChess
         //Draw pieces
         private void DrawPieces(int numberOfRows, int numberOfColumns)
         {
+            //Draw pieces
+            //float boardHeight = 838;
+            //List<float> squareSizeColumnPercent = new List<float> {0f, 7.16f, 7.40f, 7.76f, 8.11f, 8.47f, 8.95f, 9.31f, 9.90f, 10.50f, 10.86f, 11.58f};
+            //List<float> squareSizeRowPercent = new List<float> { 0f, 7.16f, 7.40f, 7.76f, 8.11f, 8.47f, 8.95f, 9.31f, 9.90f, 10.50f, 10.86f, 11.58f };
+
+            //Maybe use this alos
+            //squareStartPosX = squareStartPosX + (squareSizeRowPercent[row] * boardHeight / 100);
+
             //Draw pieces
             int margin2 = 20;
 

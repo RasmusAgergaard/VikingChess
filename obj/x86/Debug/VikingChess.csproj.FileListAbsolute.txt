@@ -64,3 +64,4 @@ C:\Google drive\Main drive\Programming\Projects\VikingChess\obj\x86\Debug\Viking
 C:\Google drive\Main drive\Programming\Projects\VikingChess\obj\x86\Debug\VikingChess.csproj.CopyComplete
 C:\Google drive\Main drive\Programming\Projects\VikingChess\obj\x86\Debug\VikingChess.exe
 C:\Google drive\Main drive\Programming\Projects\VikingChess\obj\x86\Debug\VikingChess.pdb
+C:\Google drev\Main drive\Programming\Projects\VikingChess\bin\Windows\x86\Debug\Content\font.xnb
