@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <SourceFile>C:/Google drive/Main drive/Programming/Projects/VikingChess/Content/piece_black_king.png</SourceFile>
-  <SourceTime>2019-02-23T12:43:10.7297047+01:00</SourceTime>
+  <SourceTime>2019-02-24T13:20:33+01:00</SourceTime>
   <DestFile>C:/Google drive/Main drive/Programming/Projects/VikingChess/Content/bin/Windows/Content/piece_black_king.xnb</DestFile>
-  <DestTime>2019-02-23T12:44:02.5269193+01:00</DestTime>
+  <DestTime>2019-02-24T13:21:59.8403742+01:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2018-09-23T23:55:52+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

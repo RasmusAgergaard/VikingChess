@@ -12,8 +12,8 @@ namespace VikingChess
     public class Game1 : Game
     {
         //System
-        private int windowHeight = 540;
-        private int windowWidth = 960;
+        private int windowHeight = 1080;
+        private int windowWidth = 1920;
         private MouseState oldState;
         private int pieceMoveSpeed = 1;
         private bool isPiecesMoving = true;
@@ -417,8 +417,13 @@ namespace VikingChess
             //Clear
             //GraphicsDevice.Clear(Color.White);
 
+
+
             //Camera
             _resolutionIndependence.BeginDraw();
+
+            this.GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp;
+
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, DepthStencilState.None, RasterizerState.CullNone, null, _camera.GetViewTransformationMatrix());
             spriteBatch.Draw(_bkg, _bkgPos, Color.White);
             spriteBatch.DrawString(_debugFont, string.Format("Translated Mouse Pos: x:{0:0}  y:{1:0}", _screenMousePos.X, _screenMousePos.Y), _mouseDrawPos, Color.Black);
@@ -1372,12 +1377,14 @@ namespace VikingChess
         private void DrawPieces(int numberOfRows, int numberOfColumns)
         {
             //Draw pieces
-            //float boardHeight = 838;
+            float boardHeight = 838;
             //List<float> squareSizeColumnPercent = new List<float> {0f, 7.16f, 7.40f, 7.76f, 8.11f, 8.47f, 8.95f, 9.31f, 9.90f, 10.50f, 10.86f, 11.58f};
             //List<float> squareSizeRowPercent = new List<float> { 0f, 7.16f, 7.40f, 7.76f, 8.11f, 8.47f, 8.95f, 9.31f, 9.90f, 10.50f, 10.86f, 11.58f };
 
             //Maybe use this alos
             //squareStartPosX = squareStartPosX + (squareSizeRowPercent[row] * boardHeight / 100);
+
+            List<float> squareTotalSizeColumnPercent = new List<float> { 0f, 7.16f, 14.56f, 22.32f, 30.43f, 38.9f, 47.85f, 57.16f, 67.06f, 77.56f, 88.42f };
 
             //Draw pieces
             int margin2 = 20;
@@ -1392,8 +1399,10 @@ namespace VikingChess
                 {
                     if (board[row, column] != null)
                     {
+                        float temp = squareTotalSizeColumnPercent[row] * boardHeight / 100;
+
                         int posX = 10 + margin1;
-                        int posY = 10 + margin2;
+                        int posY = (int)temp;
 
                         //Set piece position. Note, this is just to have something to check
                         board[row, column].posX = posX;
@@ -1403,7 +1412,7 @@ namespace VikingChess
                         if (board[row, column].myTeam == 1)
                         {
                             //Draw at the draw position
-                            DrawSprite(board[row, column].drawX, board[row, column].drawY, spritePieceWhite, Color.White, 1f);
+                            DrawSprite(board[row, column].drawX, board[row, column].drawY, spritePieceWhite, Color.White, 0.8f);
                         }
 
                         //Black - Defenders
@@ -1414,13 +1423,13 @@ namespace VikingChess
                             if (board[row, column].myType == 1)
                             {
                                 //Draw at the draw position
-                                DrawSprite(board[row, column].drawX, board[row, column].drawY, spritePieceBlack, Color.White, 1f);
+                                DrawSprite(board[row, column].drawX, board[row, column].drawY, spritePieceBlack, Color.White, 0.8f);
                             }
                             //King
                             else
                             {
                                 //Draw at the draw position
-                                DrawSprite(board[row, column].drawX, board[row, column].drawY, spritePieceBlackKing, Color.White, 1f);
+                                DrawSprite(board[row, column].drawX, board[row, column].drawY, spritePieceBlackKing, Color.White, 0.9f);
                             }
                         }
 
@@ -1432,7 +1441,7 @@ namespace VikingChess
 
                     }
 
-                    margin1 = margin1 + 40;
+                    margin1 = margin1 + 90;
                 }
 
                 margin2 = margin2 + 40;
