@@ -10,7 +10,7 @@ namespace ClassLibrary
     public class Piece
     {
         //Init
-        public enum teams { attackers, defenders};
+        public enum teams { attackers, defenders, refuge};
         public enum types { normal, king};
         
         //Constructor
