@@ -12,8 +12,8 @@ namespace VikingChess
     public class Game1 : Game
     {
         //System
-        private int windowHeight = 1080;
-        private int windowWidth = 1920;
+        private int windowHeight = 360;
+        private int windowWidth = 640;
         private MouseState oldState;
         private int pieceMoveSpeed = 1;
         private bool isPiecesMoving = true;

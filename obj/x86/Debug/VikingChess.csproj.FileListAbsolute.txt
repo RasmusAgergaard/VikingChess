@@ -66,3 +66,37 @@ C:\Google drive\Main drive\Programming\Projects\VikingChess\obj\x86\Debug\Viking
 C:\Google drive\Main drive\Programming\Projects\VikingChess\obj\x86\Debug\VikingChess.pdb
 C:\Google drev\Main drive\Programming\Projects\VikingChess\bin\Windows\x86\Debug\Content\font.xnb
 C:\Google drive\Main drive\Programming\Projects\VikingChess\bin\Windows\x86\Debug\Content\font.xnb
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\Content\piece.xnb
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\Content\board.xnb
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\Content\font.xnb
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\Content\kill_splash.xnb
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\Content\legal_move.xnb
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\Content\piece_black.xnb
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\Content\piece_black_king.xnb
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\Content\piece_white.xnb
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\Content\refuge.xnb
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\Content\selected_ring.xnb
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\Content\turn.xnb
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\VikingChess.exe
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\VikingChess.pdb
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\MonoGame.Framework.dll
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\SharpDX.MediaFoundation.dll
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\SharpDX.dll
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\SharpDX.XAudio2.dll
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\SharpDX.DXGI.dll
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\SharpDX.Direct3D11.dll
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\SharpDX.Direct2D1.dll
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\SharpDX.XInput.dll
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\MonoGame.Framework.xml
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\SharpDX.MediaFoundation.xml
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\SharpDX.xml
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\SharpDX.XAudio2.xml
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\SharpDX.DXGI.xml
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\SharpDX.Direct3D11.xml
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\SharpDX.Direct2D1.xml
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\SharpDX.XInput.xml
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\obj\x86\Debug\VikingChess.csprojAssemblyReference.cache
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\obj\x86\Debug\VikingChess.csproj.CoreCompileInputs.cache
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\obj\x86\Debug\VikingChess.csproj.CopyComplete
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\obj\x86\Debug\VikingChess.exe
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\obj\x86\Debug\VikingChess.pdb
