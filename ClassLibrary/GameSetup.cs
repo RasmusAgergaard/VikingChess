@@ -19,7 +19,7 @@ namespace ClassLibrary
         {
             WindowWidth = 640;
             WindowHeight = 360;
-            Zoom = 0.35f;
+            Zoom = 1f; //0.35f
             Turn = 0;
             State = gameState.gameStart;
         }

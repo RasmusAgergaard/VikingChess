@@ -103,3 +103,4 @@ C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\obj\x86\Debug\VikingC
 C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\VikingChess.exe.config
 C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\ClassLibrary.dll
 C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\ClassLibrary.pdb
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\Content\full_window.xnb

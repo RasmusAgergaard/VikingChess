@@ -49,6 +49,7 @@ namespace VikingChess
         Texture2D spriteLegalMove;
         Texture2D spriteRefuge;
         Texture2D spriteKillSplash;
+        Texture2D fullWindowSprite;
 
         //Fonts
         private SpriteFont font;
@@ -82,7 +83,7 @@ namespace VikingChess
             //Camera
             _camera = new Camera2D(_resolutionIndependence);
             _camera.Zoom = gameSetup.Zoom;
-            _camera.Position = new Vector2(_resolutionIndependence.VirtualWidth, _resolutionIndependence.VirtualHeight);
+            _camera.Position = new Vector2(_resolutionIndependence.VirtualWidth / 2, _resolutionIndependence.VirtualHeight / 2);
             //_camera.Position = new Vector2(0);
 
             InitializeResolutionIndependence(graphics.GraphicsDevice.Viewport.Width, graphics.GraphicsDevice.Viewport.Height);
@@ -95,6 +96,9 @@ namespace VikingChess
 
             _debugFont = Content.Load<SpriteFont>(@"font");
             board.Sprite = Content.Load<Texture2D>(@"board");
+
+            fullWindowSprite = Content.Load<Texture2D>(@"full_window");
+
 
             //Sprites
             spritePieceBlack = Content.Load<Texture2D>("piece_black");
@@ -178,7 +182,7 @@ namespace VikingChess
             this.GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp;
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, DepthStencilState.None, RasterizerState.CullNone, null, _camera.GetViewTransformationMatrix());
-            spriteBatch.Draw(board.Sprite, board.Position, Color.White);
+            spriteBatch.Draw(fullWindowSprite, board.Position, Color.White);
             spriteBatch.DrawString(_debugFont, string.Format("Translated Mouse Pos: x:{0:0}  y:{1:0}", _screenMousePos.X, _screenMousePos.Y), _mouseDrawPos, Color.Black);
             //spriteBatch.DrawString(_debugFont, string.Format("Real Mouse Pos: x:{0:0}  y:{1:0}", _inputHelper.MousePosition.X, _inputHelper.MousePosition.Y), _mouseDrawPos, Color.Black);
             spriteBatch.DrawString(_debugFont, _instructions, _instructionsDrawPos, Color.Yellow);
