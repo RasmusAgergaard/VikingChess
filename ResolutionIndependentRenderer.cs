@@ -13,20 +13,18 @@ namespace VikingChess
 
         public Color BackgroundColor = Color.Orange;
 
-        public ResolutionIndependentRenderer(Game game)
+        public ResolutionIndependentRenderer(Game game, int width, int height)
         {
             _game = game;
-            VirtualWidth = 1366;
-            VirtualHeight = 768;
+            VirtualWidth = width;
+            VirtualHeight = height;
 
-            ScreenWidth = 1024;
-            ScreenHeight = 768;
+            ScreenWidth = width;
+            ScreenHeight = height;
         }
 
         public int VirtualHeight;
-
         public int VirtualWidth;
-
         public int ScreenWidth;
         public int ScreenHeight;
 

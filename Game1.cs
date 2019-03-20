@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using ClassLibrary;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -12,9 +13,10 @@ namespace VikingChess
     public class Game1 : Game
     {
         //System
-        private int windowHeight = 360;
-        private int windowWidth = 640;
-        private int turn = 1;
+        GameSetup gameSetup = new GameSetup();
+
+        PlayBoard board = new PlayBoard(11, 11, new Vector2(0));
+
 
         //Graphics
         GraphicsDeviceManager graphics;
@@ -24,8 +26,6 @@ namespace VikingChess
         private ResolutionIndependentRenderer _resolutionIndependence;
         private Camera2D _camera;
         private SpriteFont _debugFont;
-        private Texture2D _bkg;
-        private Vector2 _bkgPos;
         private InputHelper _inputHelper;
         private Vector2 _screenMousePos;
         private Vector2 _mouseDrawPos;
@@ -35,8 +35,7 @@ namespace VikingChess
         private string _instructions = "Use (+/-) to Zoom  And (Shift +/-) to Rotate. (R to reset)";
 
         //Game
-        private enum gameState {gameStart, whiteTurn, whiteMoveing, whiteFighting, blackTurn, blackMoveing, blackFighting, whiteWin, blackWin };
-        private gameState currentGameState;
+
 
         //AI
         string AiLog = "";
@@ -51,32 +50,18 @@ namespace VikingChess
         Texture2D spriteRefuge;
         Texture2D spriteKillSplash;
 
-        //Kill splash
-        private int KillSplashX = -100;
-        private int KillSplashY = -100;
-
         //Fonts
         private SpriteFont font;
-
-        //Board
-        private int boardRows = 11;
-        private int boardColumns = 11;
-        private int boardX = 30;
-        private int boardY = 30;
-        private int boardSquareSize = 40;
-
-        private int selectedPieceColumn;
-        private int selectedPieceRow;
 
 
         //Constructor
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
-            _resolutionIndependence = new ResolutionIndependentRenderer(this);
+            _resolutionIndependence = new ResolutionIndependentRenderer(this, gameSetup.WindowWidth, gameSetup.WindowHeight);
             _inputHelper = new InputHelper();
-            graphics.PreferredBackBufferWidth = windowWidth;
-            graphics.PreferredBackBufferHeight = windowHeight;
+            graphics.PreferredBackBufferWidth = gameSetup.WindowWidth;
+            graphics.PreferredBackBufferHeight = gameSetup.WindowHeight;
             graphics.ApplyChanges();
             Content.RootDirectory = "Content";
         }
@@ -85,10 +70,6 @@ namespace VikingChess
         {
             //System
             this.IsMouseVisible = true;
-
-            //Game
-            currentGameState = gameState.gameStart;
-
 
             base.Initialize();
         }
@@ -100,8 +81,9 @@ namespace VikingChess
 
             //Camera
             _camera = new Camera2D(_resolutionIndependence);
-            _camera.Zoom = 0.5f;
-            _camera.Position = new Vector2(_resolutionIndependence.VirtualWidth / 2, _resolutionIndependence.VirtualHeight / 2);
+            _camera.Zoom = gameSetup.Zoom;
+            _camera.Position = new Vector2(_resolutionIndependence.VirtualWidth, _resolutionIndependence.VirtualHeight);
+            //_camera.Position = new Vector2(0);
 
             InitializeResolutionIndependence(graphics.GraphicsDevice.Viewport.Width, graphics.GraphicsDevice.Viewport.Height);
 
@@ -112,9 +94,7 @@ namespace VikingChess
             _instructionsDrawPos.Y = 10f;
 
             _debugFont = Content.Load<SpriteFont>(@"font");
-            _bkg = Content.Load<Texture2D>(@"board");
-            _bkgPos = new Vector2(0,0);
-
+            board.Sprite = Content.Load<Texture2D>(@"board");
 
             //Sprites
             spritePieceBlack = Content.Load<Texture2D>("piece_black");
@@ -132,8 +112,8 @@ namespace VikingChess
 
         private void InitializeResolutionIndependence(int realScreenWidth, int realScreenHeight)
         {
-            _resolutionIndependence.VirtualWidth = 960;
-            _resolutionIndependence.VirtualHeight = 540;
+            _resolutionIndependence.VirtualWidth = gameSetup.WindowWidth;
+            _resolutionIndependence.VirtualHeight = gameSetup.WindowHeight;
             _resolutionIndependence.ScreenWidth = realScreenWidth;
             _resolutionIndependence.ScreenHeight = realScreenHeight;
             _resolutionIndependence.Initialize();
@@ -192,21 +172,15 @@ namespace VikingChess
         /*********************************** Draw ***********************************/
         protected override void Draw(GameTime gameTime)
         {
-            //spriteBatch.Begin();
-
-            //Clear
-            //GraphicsDevice.Clear(Color.White);
-
-
-
             //Camera
             _resolutionIndependence.BeginDraw();
 
             this.GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp;
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, DepthStencilState.None, RasterizerState.CullNone, null, _camera.GetViewTransformationMatrix());
-            spriteBatch.Draw(_bkg, _bkgPos, Color.White);
+            spriteBatch.Draw(board.Sprite, board.Position, Color.White);
             spriteBatch.DrawString(_debugFont, string.Format("Translated Mouse Pos: x:{0:0}  y:{1:0}", _screenMousePos.X, _screenMousePos.Y), _mouseDrawPos, Color.Black);
+            //spriteBatch.DrawString(_debugFont, string.Format("Real Mouse Pos: x:{0:0}  y:{1:0}", _inputHelper.MousePosition.X, _inputHelper.MousePosition.Y), _mouseDrawPos, Color.Black);
             spriteBatch.DrawString(_debugFont, _instructions, _instructionsDrawPos, Color.Yellow);
             
             //Draw board
@@ -216,8 +190,8 @@ namespace VikingChess
 
             //Draw text
             //DrawText();
-            spriteBatch.DrawString(font, "Game state: " + currentGameState.ToString(), new Vector2(30, 480), Color.Black);
-            spriteBatch.DrawString(font, "Turn: " + turn.ToString(), new Vector2(30, 510), Color.Black);
+            spriteBatch.DrawString(font, "Game state: " + gameSetup.State.ToString(), new Vector2(30, 480), Color.Black);
+            spriteBatch.DrawString(font, "Turn: " + gameSetup.Turn.ToString(), new Vector2(30, 510), Color.Black);
             spriteBatch.DrawString(font, "AI log: " + AiLog, new Vector2(30, 540), Color.Black);
 
             //Base draw
