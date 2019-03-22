@@ -67,15 +67,6 @@ C:\Google drive\Main drive\Programming\Projects\VikingChess\obj\x86\Debug\Viking
 C:\Google drev\Main drive\Programming\Projects\VikingChess\bin\Windows\x86\Debug\Content\font.xnb
 C:\Google drive\Main drive\Programming\Projects\VikingChess\bin\Windows\x86\Debug\Content\font.xnb
 C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\Content\piece.xnb
-C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\Content\board.xnb
-C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\Content\font.xnb
-C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\Content\kill_splash.xnb
-C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\Content\legal_move.xnb
-C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\Content\piece_black.xnb
-C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\Content\piece_black_king.xnb
-C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\Content\piece_white.xnb
-C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\Content\refuge.xnb
-C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\Content\selected_ring.xnb
 C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\Content\turn.xnb
 C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\VikingChess.exe
 C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\VikingChess.pdb
@@ -103,4 +94,8 @@ C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\obj\x86\Debug\VikingC
 C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\VikingChess.exe.config
 C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\ClassLibrary.dll
 C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\ClassLibrary.pdb
-C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\Content\full_window.xnb
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\Content\board_360x360.xnb
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\Content\Fonts\normalFont.xnb
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\Content\Pieces\piece_black.xnb
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\Content\Pieces\piece_black_king.xnb
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\Content\Pieces\piece_white.xnb

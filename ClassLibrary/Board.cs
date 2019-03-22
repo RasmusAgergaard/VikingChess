@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -26,6 +27,7 @@ namespace ClassLibrary
             LegalMoves = new Legal[Columns, Rows];
             BoardPositions = new Vector2[Columns, Rows];
             SelectedPiece = null;
+            SpriteName = "board_360x360";
 
             AddPiecesToBoard();
             CalculateBoardPositions();
@@ -38,7 +40,7 @@ namespace ClassLibrary
         public Legal[,] LegalMoves { get; set; }
         public Vector2[,] BoardPositions { get; set; }
         public Piece SelectedPiece { get; set; }
-        public Texture2D Sprite { get; set; }
+        public String SpriteName { get; set; }
 
         public void AddPiecesToBoard()
         {
@@ -95,7 +97,21 @@ namespace ClassLibrary
 
         private void CalculateBoardPositions()
         {
+            var fieldSize = 32.7f;
+            var columnPos = 0f;
+            var rowPos = 0f;
 
+            for (int column = 0; column < Columns; column++)
+            {
+                for (int row = 0; row < Rows; row++)
+                {
+                    BoardPositions[column, row] = new Vector2(columnPos, rowPos);
+                    rowPos += fieldSize;
+                }
+
+                columnPos += fieldSize;
+                rowPos = 0f;
+            }
         }
 
         public void CalculateLegalMoves(int column, int row)

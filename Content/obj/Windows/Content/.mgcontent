@@ -4,25 +4,13 @@
   <Platform>Windows</Platform>
   <Config />
   <SourceFiles>
-    <File>C:/Users/Rasmus/Desktop/Main drive/Programming/VikingChess/Content/board.png</File>
-    <File>C:/Users/Rasmus/Desktop/Main drive/Programming/VikingChess/Content/font.spritefont</File>
-    <File>C:/Users/Rasmus/Desktop/Main drive/Programming/VikingChess/Content/full_window.png</File>
-    <File>C:/Users/Rasmus/Desktop/Main drive/Programming/VikingChess/Content/kill_splash.png</File>
-    <File>C:/Users/Rasmus/Desktop/Main drive/Programming/VikingChess/Content/legal_move.png</File>
-    <File>C:/Users/Rasmus/Desktop/Main drive/Programming/VikingChess/Content/piece_black.png</File>
-    <File>C:/Users/Rasmus/Desktop/Main drive/Programming/VikingChess/Content/piece_black_king.png</File>
-    <File>C:/Users/Rasmus/Desktop/Main drive/Programming/VikingChess/Content/piece_white.png</File>
-    <File>C:/Users/Rasmus/Desktop/Main drive/Programming/VikingChess/Content/refuge.png</File>
-    <File>C:/Users/Rasmus/Desktop/Main drive/Programming/VikingChess/Content/selected_ring.png</File>
-    <File>C:/Users/Rasmus/Desktop/Main drive/Programming/VikingChess/Content/turn.spritefont</File>
+    <File>C:/Users/Rasmus/Desktop/Main drive/Programming/VikingChess/Content/board_360x360.png</File>
+    <File>C:/Users/Rasmus/Desktop/Main drive/Programming/VikingChess/Content/Fonts/normalFont.spritefont</File>
+    <File>C:/Users/Rasmus/Desktop/Main drive/Programming/VikingChess/Content/Pieces/piece_black.png</File>
+    <File>C:/Users/Rasmus/Desktop/Main drive/Programming/VikingChess/Content/Pieces/piece_black_king.png</File>
+    <File>C:/Users/Rasmus/Desktop/Main drive/Programming/VikingChess/Content/Pieces/piece_white.png</File>
   </SourceFiles>
   <DestFiles>
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
