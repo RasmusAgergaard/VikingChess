@@ -90,11 +90,11 @@ namespace VikingChess
             spriteBatch.Begin();
             GraphicsDevice.Clear(Color.White);
 
-            var spriteHandler = new SpriteHandler();
+            var spriteHandler = new SpriteHandler(spriteBatch);
 
             //Draw sprite
-            spriteHandler.DrawGameBoard();
-            spriteHandler.DrawPieces();
+            spriteHandler.DrawSprite(spriteBoard, board.Position);
+            spriteHandler.DrawPieces(board, spritePieceBlack, spritePieceBlackKing, spritePieceWhite);
 
             //Draw text
             spriteBatch.DrawString(normalFont, "Game state: " + gameSetup.State.ToString(), new Vector2(380, 20), Color.Black);

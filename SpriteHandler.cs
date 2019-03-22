@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using ClassLibrary;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,13 +11,24 @@ namespace VikingChess
 {
     public class SpriteHandler
     {
-
-        public void DrawGameBoard()
+        public SpriteHandler()
         {
-            SpriteBatch.Draw(spriteBoard, board.Position, Color.White);
+
         }
 
-        public void DrawPieces()
+        public SpriteHandler(SpriteBatch spriteBatch)
+        {
+            Batch = spriteBatch;
+        }
+
+        public SpriteBatch Batch { get; set; }
+
+        public void DrawSprite(Texture2D sprite, Vector2 vector2)
+        {
+            Batch.Draw(sprite, vector2, Color.White);
+        }
+
+        public void DrawPieces(PlayBoard board, Texture2D spritePieceBlack, Texture2D spritePieceBlackKing, Texture2D spritePieceWhite)
         {
             for (int column = 0; column < board.Columns; column++)
             {
@@ -28,12 +41,12 @@ namespace VikingChess
                         {
                             if (board.Board[column, row].Team == Piece.teams.attackers)
                             {
-                                spriteBatch.Draw(spritePieceWhite, board.BoardPositions[column, row], Color.White);
+                                DrawSprite(spritePieceWhite, board.BoardPositions[column, row]);
                             }
 
                             if (board.Board[column, row].Team == Piece.teams.defenders)
                             {
-                                spriteBatch.Draw(spritePieceBlack, board.BoardPositions[column, row], Color.White);
+                                DrawSprite(spritePieceBlack, board.BoardPositions[column, row]);
                             }
                         }
 
@@ -42,7 +55,7 @@ namespace VikingChess
                         {
                             if (board.Board[column, row].Team == Piece.teams.defenders)
                             {
-                                spriteBatch.Draw(spritePieceBlackKing, board.BoardPositions[column, row], Color.White);
+                                DrawSprite(spritePieceBlackKing, board.BoardPositions[column, row]);
                             }
 
                             if (board.Board[column, row].Team == Piece.teams.attackers)
