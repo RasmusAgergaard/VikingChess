@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace ClassLibrary
         //Init
         public enum teams { attackers, defenders, refuge};
         public enum types { normal, king};
+        CollisionController collisionController = new CollisionController();
         
         //Constructor
         public Piece()
@@ -35,5 +37,17 @@ namespace ClassLibrary
         public Vector2 Position { get; set; } 
         public Vector2 DrawPosition { get; set; }
         public int MovedInTurn { get; set; }
+
+        public bool SelectPiece(MouseState mouseState, Point mousePoint)
+        {
+            if (collisionController.PointColisionWithBox(mousePoint.X, mousePoint.Y, Position.X, Position.Y, 33, 33))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }

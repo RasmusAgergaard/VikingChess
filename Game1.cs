@@ -14,6 +14,7 @@ namespace VikingChess
     {
         //Init
         GameSetup gameSetup = new GameSetup();
+        CollisionController collisionController = new CollisionController();
         PlayBoard board = new PlayBoard(11, 11, new Vector2(0));
 
         //Graphics
@@ -27,7 +28,7 @@ namespace VikingChess
         Texture2D spritePieceWhite;
 
         //Fonts
-        private SpriteFont normalFont;
+        SpriteFont normalFont;
 
         //Constructor
         public Game1()
@@ -78,6 +79,9 @@ namespace VikingChess
             //Update mouse
             var mouseState = Mouse.GetState();
             var mousePoint = new Point(mouseState.X, mouseState.Y);
+
+            //Select piece
+
 
             //Base update
             base.Update(gameTime);

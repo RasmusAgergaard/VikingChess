@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CollisionController.cs" />
     <Compile Include="PlayBoard.cs" />
     <Compile Include="GameSetup.cs" />
     <Compile Include="Legal.cs" />

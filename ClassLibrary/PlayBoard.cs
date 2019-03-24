@@ -28,6 +28,10 @@ namespace ClassLibrary
             BoardPositions = new Vector2[Columns, Rows];
             SelectedPiece = null;
             SpriteName = "board_360x360";
+            BoardWidth = 360;
+            BoardHeight = 360;
+            FieldWidth = (float)BoardWidth / Rows;
+            FieldHeight = (float)BoardHeight / Columns;
 
             AddPiecesToBoard();
             CalculateBoardPositions();
@@ -41,6 +45,10 @@ namespace ClassLibrary
         public Vector2[,] BoardPositions { get; set; }
         public Piece SelectedPiece { get; set; }
         public String SpriteName { get; set; }
+        public int BoardWidth { get; set; }
+        public int BoardHeight { get; set; }
+        public float FieldWidth { get; set; }
+        public float FieldHeight { get; set; }
 
         public void AddPiecesToBoard()
         {
@@ -97,7 +105,7 @@ namespace ClassLibrary
 
         private void CalculateBoardPositions()
         {
-            var fieldSize = 32.7f;
+            var fieldSize = FieldWidth;
             var columnPos = 0f;
             var rowPos = 0f;
 
