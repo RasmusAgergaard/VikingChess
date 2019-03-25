@@ -13,7 +13,7 @@ namespace ClassLibrary
         //Init
         public enum teams { attackers, defenders, refuge};
         public enum types { normal, king};
-        CollisionController collisionController = new CollisionController();
+        CollisionHandler collisionController = new CollisionHandler();
         
         //Constructor
         public Piece()

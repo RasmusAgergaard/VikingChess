@@ -132,3 +132,4 @@ C:\Users\rasmu\Desktop\Main drive\Programming\VikingChess\obj\x86\Debug\VikingCh
 C:\Users\rasmu\Desktop\Main drive\Programming\VikingChess\obj\x86\Debug\VikingChess.csproj.CopyComplete
 C:\Users\rasmu\Desktop\Main drive\Programming\VikingChess\obj\x86\Debug\VikingChess.exe
 C:\Users\rasmu\Desktop\Main drive\Programming\VikingChess\obj\x86\Debug\VikingChess.pdb
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\bin\Windows\x86\Debug\Content\Pieces\selected_ring.xnb

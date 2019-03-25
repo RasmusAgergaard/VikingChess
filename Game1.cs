@@ -14,8 +14,9 @@ namespace VikingChess
     {
         //Init
         GameSetup gameSetup = new GameSetup();
-        CollisionController collisionController = new CollisionController();
-        PlayBoard board = new PlayBoard(11, 11, new Vector2(0));
+        PlayBoard board;
+        CollisionHandler collisionHandler;
+        GameplayHandler gameplayHandler;
 
         //Graphics
         GraphicsDeviceManager graphics;
@@ -26,6 +27,7 @@ namespace VikingChess
         Texture2D spritePieceBlack;
         Texture2D spritePieceBlackKing;
         Texture2D spritePieceWhite;
+        Texture2D spriteSelectedPiece;
 
         //Fonts
         SpriteFont normalFont;
@@ -42,9 +44,11 @@ namespace VikingChess
 
         protected override void Initialize()
         {
-            //System
-            this.IsMouseVisible = true;
+            board = new PlayBoard(11, 11, new Vector2(0));
+            gameplayHandler = new GameplayHandler(board);
+            collisionHandler = new CollisionHandler();
 
+            this.IsMouseVisible = true;
             base.Initialize();
         }
 
@@ -58,6 +62,7 @@ namespace VikingChess
             spritePieceBlack = Content.Load<Texture2D>(@"Pieces\piece_black");
             spritePieceBlackKing = Content.Load<Texture2D>(@"Pieces\piece_black_king");
             spritePieceWhite = Content.Load<Texture2D>(@"Pieces\piece_white");
+            spriteSelectedPiece = Content.Load<Texture2D>(@"Pieces\selected_ring");
 
             //Fonts
             normalFont = Content.Load<SpriteFont>(@"Fonts\normalFont");
@@ -70,18 +75,16 @@ namespace VikingChess
         /*********************************** Update ***********************************/
         protected override void Update(GameTime gameTime)
         {
+            
+
             //Exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
                 Exit();
             }
 
-            //Update mouse
-            var mouseState = Mouse.GetState();
-            var mousePoint = new Point(mouseState.X, mouseState.Y);
-
-            //Select piece
-
+            //Update gameplay
+            gameplayHandler.Update(gameSetup);
 
             //Base update
             base.Update(gameTime);
@@ -98,7 +101,7 @@ namespace VikingChess
 
             //Draw sprite
             spriteHandler.DrawSprite(spriteBoard, board.Position);
-            spriteHandler.DrawPieces(board, spritePieceBlack, spritePieceBlackKing, spritePieceWhite);
+            spriteHandler.DrawPieces(board, gameplayHandler.SelectedPiece, spritePieceBlack, spritePieceBlackKing, spritePieceWhite, spriteSelectedPiece);
 
             //Draw text
             spriteBatch.DrawString(normalFont, "Game state: " + gameSetup.State.ToString(), new Vector2(380, 20), Color.Black);

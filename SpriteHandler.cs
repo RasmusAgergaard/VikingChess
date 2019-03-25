@@ -28,7 +28,7 @@ namespace VikingChess
             Batch.Draw(sprite, vector2, Color.White);
         }
 
-        public void DrawPieces(PlayBoard board, Texture2D spritePieceBlack, Texture2D spritePieceBlackKing, Texture2D spritePieceWhite)
+        public void DrawPieces(PlayBoard board, Piece selectedPiece, Texture2D spritePieceBlack, Texture2D spritePieceBlackKing, Texture2D spritePieceWhite, Texture2D spriteSelectedPiece)
         {
             for (int column = 0; column < board.Columns; column++)
             {
@@ -36,6 +36,12 @@ namespace VikingChess
                 {
                     if (board.Board[column, row] != null)
                     {
+                        //Selected ring
+                        if (board.Board[column, row] == selectedPiece)
+                        {
+                            DrawSprite(spriteSelectedPiece, board.BoardPositions[column, row]);
+                        }
+
                         //Normal pieces
                         if (board.Board[column, row].Type == Piece.types.normal)
                         {
