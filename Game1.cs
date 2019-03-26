@@ -75,8 +75,6 @@ namespace VikingChess
         /*********************************** Update ***********************************/
         protected override void Update(GameTime gameTime)
         {
-            
-
             //Exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
@@ -84,12 +82,11 @@ namespace VikingChess
             }
 
             //Update gameplay
-            gameplayHandler.Update(gameSetup);
+            board = gameplayHandler.Update(gameSetup);
 
             //Base update
             base.Update(gameTime);
         }
-
 
         /*********************************** Draw ***********************************/
         protected override void Draw(GameTime gameTime)

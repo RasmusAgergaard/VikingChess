@@ -26,7 +26,6 @@ namespace ClassLibrary
             Board = new Piece[Columns, Rows];
             LegalMoves = new Legal[Columns, Rows];
             BoardPositions = new Vector2[Columns, Rows];
-            SelectedPiece = null;
             SpriteName = "board_360x360";
             BoardWidth = 360;
             BoardHeight = 360;
@@ -43,7 +42,6 @@ namespace ClassLibrary
         public Piece[,] Board { get; set; }
         public Legal[,] LegalMoves { get; set; }
         public Vector2[,] BoardPositions { get; set; }
-        public Piece SelectedPiece { get; set; }
         public String SpriteName { get; set; }
         public int BoardWidth { get; set; }
         public int BoardHeight { get; set; }

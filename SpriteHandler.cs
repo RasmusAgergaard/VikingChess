@@ -37,7 +37,7 @@ namespace VikingChess
                     if (board.Board[column, row] != null)
                     {
                         //Selected ring
-                        if (board.Board[column, row] == selectedPiece)
+                        if (board.Board[column, row] == selectedPiece && selectedPiece != null)
                         {
                             DrawSprite(spriteSelectedPiece, board.BoardPositions[column, row]);
                         }
