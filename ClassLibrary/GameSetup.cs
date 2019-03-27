@@ -10,11 +10,6 @@ namespace ClassLibrary
     {
         public enum gameState { gameStart, whiteTurn, whiteMoveing, whiteFighting, blackTurn, blackMoveing, blackFighting, whiteWin, blackWin };
 
-        //public GameSetup()
-        //{
-
-        //}
-
         public GameSetup()
         {
             WindowWidth = 640;

@@ -11,6 +11,7 @@ namespace ClassLibrary
     public class GameplayHandler
     {
         CollisionHandler collisionHandler = new CollisionHandler();
+        LegalMove legalMove = new LegalMove();
 
         public GameplayHandler()
         {
@@ -30,9 +31,10 @@ namespace ClassLibrary
         public MouseState OldMouseState { get; set; }
         public Point MousePoint { get; set; }
 
-        //Update
+        //Main update method
         public PlayBoard Update(GameSetup gameSetup)
         {
+            //Update mouse
             CurrentMouseState = Mouse.GetState();
             MousePoint = new Point(CurrentMouseState.X, CurrentMouseState.Y);
 
@@ -45,25 +47,49 @@ namespace ClassLibrary
                 }
             }
 
+            //Kill check
+
+            //WinCoditionCheck
+
+            //Return the updated version of the board
             return Board;
-            
         }
 
         //Piece control
         public void PieceControl(MouseState mouseState, Point mousePoint, int column, int row)
         {
-            if (collisionHandler.PointColisionWithBox(mousePoint.X, mousePoint.Y, Board.Position.X + (Board.FieldWidth * column), Board.Position.Y + (Board.FieldHeight * row), Board.FieldWidth, Board.FieldHeight))
+            var mouseX = mousePoint.X;
+            var mouseY = mousePoint.Y;
+            var posX = Board.Position.X + (Board.FieldWidth * column);
+            var posY = Board.Position.Y + (Board.FieldHeight * row);
+            var width = Board.FieldWidth;
+            var height = Board.FieldHeight;
+
+            if (collisionHandler.PointColisionWithBox(mouseX, mouseY, posX, posY, width, height))
             {
-                if (mouseState.LeftButton == ButtonState.Pressed && OldMouseState.LeftButton == ButtonState.Released)
+                if (MousePress(mouseState) == true)
                 {
-                    
                     SelectPiece(column, row);
                     MovePiece(column, row);
-                    //DeselectPiece(column, row);
-                }
 
-                OldMouseState = mouseState;
+                    //Find legal moves, and return the updated board
+                    Board = legalMove.FindLegalMoves(Board, SelectedPiece, SelectedPieceColumn, SelectedPieceRow);
+                }
             }
+        }
+
+        //Mouse press
+        private bool MousePress(MouseState mouseState)
+        {
+            var mousePressed = false;
+
+            if (mouseState.LeftButton == ButtonState.Pressed && OldMouseState.LeftButton == ButtonState.Released)
+            {
+                mousePressed = true;
+            }
+
+            OldMouseState = mouseState;
+            return mousePressed;
         }
 
         //Select piece
@@ -89,10 +115,11 @@ namespace ClassLibrary
         //Move piece
         private void MovePiece(int column, int row)
         {
-            if (Board.Board[column, row] == null)
+            if (SelectedPiece != null)
             {
-                if (SelectedPiece != null)
+                if (Board.Board[column, row] == null && Board.LegalMoves[column, row] != null)
                 {
+                    //Move piece
                     Board.Board[column, row] = SelectedPiece;
                     Board.Board[SelectedPieceColumn, SelectedPieceRow] = null;
                     SelectedPiece = null;

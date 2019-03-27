@@ -28,6 +28,23 @@ namespace VikingChess
             Batch.Draw(sprite, vector2, Color.White);
         }
 
+        public void DrawLegalMoves(PlayBoard board, Texture2D sprite, Piece selectedPiece)
+        {
+            if (selectedPiece != null)
+            {
+                for (int column = 0; column < board.Columns; column++)
+                {
+                    for (int row = 0; row < board.Rows; row++)
+                    {
+                        if (board.LegalMoves[column, row] != null)
+                        {
+                            DrawSprite(sprite, board.BoardPositions[column, row]);
+                        }
+                    }
+                }
+            }
+        }
+
         public void DrawPieces(PlayBoard board, Piece selectedPiece, Texture2D spritePieceBlack, Texture2D spritePieceBlackKing, Texture2D spritePieceWhite, Texture2D spriteSelectedPiece)
         {
             for (int column = 0; column < board.Columns; column++)

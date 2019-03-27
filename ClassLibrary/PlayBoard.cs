@@ -119,10 +119,5 @@ namespace ClassLibrary
                 rowPos = 0f;
             }
         }
-
-        public void CalculateLegalMoves(int column, int row)
-        {
-
-        }
     }
 }

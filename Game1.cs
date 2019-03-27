@@ -28,6 +28,7 @@ namespace VikingChess
         Texture2D spritePieceBlackKing;
         Texture2D spritePieceWhite;
         Texture2D spriteSelectedPiece;
+        Texture2D spriteLegalMove;
 
         //Fonts
         SpriteFont normalFont;
@@ -63,6 +64,7 @@ namespace VikingChess
             spritePieceBlackKing = Content.Load<Texture2D>(@"Pieces\piece_black_king");
             spritePieceWhite = Content.Load<Texture2D>(@"Pieces\piece_white");
             spriteSelectedPiece = Content.Load<Texture2D>(@"Pieces\selected_ring");
+            spriteLegalMove = Content.Load<Texture2D>(@"Board objects\legal_move");
 
             //Fonts
             normalFont = Content.Load<SpriteFont>(@"Fonts\normalFont");
@@ -81,8 +83,39 @@ namespace VikingChess
                 Exit();
             }
 
-            //Update gameplay
-            board = gameplayHandler.Update(gameSetup);
+            switch (gameSetup.State)
+            {
+                case GameSetup.gameState.gameStart:
+                    break;
+
+                case GameSetup.gameState.whiteTurn:
+                    board = gameplayHandler.Update(gameSetup); //Update gameplay
+                    break;
+
+                case GameSetup.gameState.whiteMoveing:
+                    break;
+
+                case GameSetup.gameState.whiteFighting:
+                    break;
+
+                case GameSetup.gameState.blackTurn:
+                    board = gameplayHandler.Update(gameSetup); //Update gameplay
+                    break;
+
+                case GameSetup.gameState.blackMoveing:
+                    break;
+
+                case GameSetup.gameState.blackFighting:
+                    break;
+
+                case GameSetup.gameState.whiteWin:
+                    break;
+
+                case GameSetup.gameState.blackWin:
+                    break;
+            }
+
+
 
             //Base update
             base.Update(gameTime);
@@ -98,6 +131,7 @@ namespace VikingChess
 
             //Draw sprite
             spriteHandler.DrawSprite(spriteBoard, board.Position);
+            spriteHandler.DrawLegalMoves(board, spriteLegalMove, gameplayHandler.SelectedPiece);
             spriteHandler.DrawPieces(board, gameplayHandler.SelectedPiece, spritePieceBlack, spritePieceBlackKing, spritePieceWhite, spriteSelectedPiece);
 
             //Draw text

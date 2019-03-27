@@ -4,6 +4,7 @@
   <Platform>Windows</Platform>
   <Config />
   <SourceFiles>
+    <File>C:/Users/Rasmus/Desktop/Main drive/Programming/VikingChess/Content/Board objects/legal_move.png</File>
     <File>C:/Users/Rasmus/Desktop/Main drive/Programming/VikingChess/Content/board_360x360.png</File>
     <File>C:/Users/Rasmus/Desktop/Main drive/Programming/VikingChess/Content/Fonts/normalFont.spritefont</File>
     <File>C:/Users/Rasmus/Desktop/Main drive/Programming/VikingChess/Content/Pieces/piece_black.png</File>
@@ -12,6 +13,7 @@
     <File>C:/Users/Rasmus/Desktop/Main drive/Programming/VikingChess/Content/Pieces/selected_ring.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
