@@ -11,6 +11,9 @@ namespace ClassLibrary
 {
     public class PlayBoard
     {
+        public enum gameState { gameStart, attackerTurn, attackerMoveing, attackerFighting, defenderTurn, defenderMoveing, defenderFighting, attackerWin, defenderWin };
+
+
         //Constructor
         public PlayBoard()
         {
@@ -31,6 +34,8 @@ namespace ClassLibrary
             BoardHeight = 360;
             FieldWidth = (float)BoardWidth / Rows;
             FieldHeight = (float)BoardHeight / Columns;
+            State = gameState.attackerTurn;
+            Turn = 0;
 
             AddPiecesToBoard();
             CalculateBoardPositions();
@@ -47,6 +52,8 @@ namespace ClassLibrary
         public int BoardHeight { get; set; }
         public float FieldWidth { get; set; }
         public float FieldHeight { get; set; }
+        public gameState State { get; set; }
+        public int Turn { get; set; }
 
         public void AddPiecesToBoard()
         {
@@ -117,6 +124,51 @@ namespace ClassLibrary
 
                 columnPos += fieldSize;
                 rowPos = 0f;
+            }
+        }
+
+        public void SetTurn(gameState gameState)
+        {
+            State = gameState;
+        }
+
+        public void ChangeTurn()
+        {
+            switch (State)
+            {
+                case gameState.gameStart:
+                    State = gameState.attackerTurn;
+                    break;
+
+                case gameState.attackerTurn:
+                    State = gameState.attackerMoveing;
+                    break;
+
+                case gameState.attackerMoveing:
+                    State = gameState.attackerFighting;
+                    break;
+
+                case gameState.attackerFighting:
+                    State = gameState.defenderTurn;
+                    break;
+
+                case gameState.defenderTurn:
+                    State = gameState.defenderMoveing;
+                    break;
+
+                case gameState.defenderMoveing:
+                    State = gameState.defenderFighting;
+                    break;
+
+                case gameState.defenderFighting:
+                    State = gameState.attackerTurn;
+                    break;
+
+                case gameState.attackerWin:
+                    break;
+
+                case gameState.defenderWin:
+                    break;
             }
         }
     }

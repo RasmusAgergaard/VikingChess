@@ -43,11 +43,11 @@ namespace ClassLibrary
             {
                 for (int row = 0; row < Board.Rows; row++)
                 {
-                    PieceControl(CurrentMouseState, MousePoint, column, row);
+                    PieceControl(CurrentMouseState, MousePoint, column, row, gameSetup);
+
+                    KillCheck(column, row);
                 }
             }
-
-            //Kill check
 
             //WinCoditionCheck
 
@@ -56,7 +56,7 @@ namespace ClassLibrary
         }
 
         //Piece control
-        public void PieceControl(MouseState mouseState, Point mousePoint, int column, int row)
+        public void PieceControl(MouseState mouseState, Point mousePoint, int column, int row, GameSetup gameSetup)
         {
             var mouseX = mousePoint.X;
             var mouseY = mousePoint.Y;
@@ -69,7 +69,7 @@ namespace ClassLibrary
             {
                 if (MousePress(mouseState) == true)
                 {
-                    SelectPiece(column, row);
+                    SelectPiece(column, row, gameSetup);
                     MovePiece(column, row);
 
                     //Find legal moves, and return the updated board
@@ -93,13 +93,24 @@ namespace ClassLibrary
         }
 
         //Select piece
-        private void SelectPiece(int column, int row)
+        private void SelectPiece(int column, int row, GameSetup gameSetup)
         {
             if (Board.Board[column, row] != null)
             {
-                SelectedPiece = Board.Board[column, row];
-                SelectedPieceColumn = column;
-                SelectedPieceRow = row;
+                //Only select if the pieces of the team that has the turn
+                if (Board.Board[column, row].Team == Piece.teams.attackers && Board.State == PlayBoard.gameState.attackerTurn)
+                {
+                    SelectedPiece = Board.Board[column, row];
+                    SelectedPieceColumn = column;
+                    SelectedPieceRow = row;
+                }
+
+                if (Board.Board[column, row].Team == Piece.teams.defenders && Board.State == PlayBoard.gameState.defenderTurn)
+                {
+                    SelectedPiece = Board.Board[column, row];
+                    SelectedPieceColumn = column;
+                    SelectedPieceRow = row;
+                }
             }
         }
 
@@ -122,9 +133,104 @@ namespace ClassLibrary
                     //Move piece
                     Board.Board[column, row] = SelectedPiece;
                     Board.Board[SelectedPieceColumn, SelectedPieceRow] = null;
+                    Board.Board[column, row].MovedInTurn = Board.Turn;
                     SelectedPiece = null;
+
+                    Board.ChangeTurn();
                 }
             }
+        }
+
+        private void KillCheck(int column, int row)
+        {
+            if (Board.Board[column, row] != null)
+            {
+                Piece.teams myTeam;
+                Piece.teams enemyTeam;
+
+                if (Board.State == PlayBoard.gameState.attackerFighting)
+                {
+                    myTeam = Piece.teams.attackers;
+                    enemyTeam = Piece.teams.defenders;
+                }
+                else
+                {
+                    myTeam = Piece.teams.defenders;
+                    enemyTeam = Piece.teams.attackers;
+                }
+
+                //If the piece is a enemy
+                if (Board.Board[column, row].Team == enemyTeam)
+                {
+                    bool kingTakenColumn = false;
+                    bool kingTakenRow = false;
+
+                    //Column
+                    if (column > 0 && column < Board.Columns - 1)
+                    {
+                        var checkColumn1 = Board.Board[column + 1, row];
+                        var checkColumn2 = Board.Board[column - 1, row];
+
+                        //Null check
+                        if (checkColumn1 != null && checkColumn2 != null)
+                        {
+                            //Is there a piece on both sides
+                            if (checkColumn1.Team == myTeam && checkColumn2.Team == myTeam)
+                            {
+                                //Is one of them was moved in the same turn
+                                if (checkColumn1.MovedInTurn == Board.Turn || checkColumn2.MovedInTurn == Board.Turn)
+                                {
+                                    //Is the piece a king, then set varible
+                                    if (Board.Board[column, row].Type == Piece.types.king)
+                                    {
+                                        kingTakenColumn = true;
+                                    }
+                                    //If not - kill it
+                                    else
+                                    {
+                                        KillPiece(column, row);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    //Row
+                    if (row > 0 && row < Board.Rows - 1)
+                    {
+                        var checkRow1 = Board.Board[column, row + 1];
+                        var checkRow2 = Board.Board[column, row - 1];
+
+                        //Null check
+                        if (checkRow1 != null && checkRow2 != null)
+                        {
+                            //Is there a piece on both sides
+                            if (checkRow1.Team == myTeam && checkRow2.Team == myTeam)
+                            {
+                                //Is one of them the last moved piece
+                                if (checkRow1.MovedInTurn == Board.Turn || checkRow2.MovedInTurn == Board.Turn)
+                                {
+                                    //Is the piece a king, then set varible
+                                    if (Board.Board[column, row].Type == Piece.types.king)
+                                    {
+                                        kingTakenRow = true;
+                                    }
+                                    //If not - kill it
+                                    else
+                                    {
+                                        KillPiece(column, row);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } 
+        }
+
+        private void KillPiece(int column, int row)
+        {
+            Board.Board[column, row] = null;
         }
     }
 }

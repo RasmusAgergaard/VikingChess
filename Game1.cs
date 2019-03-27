@@ -83,35 +83,39 @@ namespace VikingChess
                 Exit();
             }
 
-            switch (gameSetup.State)
+            switch (board.State)
             {
-                case GameSetup.gameState.gameStart:
+                case PlayBoard.gameState.gameStart:
                     break;
 
-                case GameSetup.gameState.whiteTurn:
-                    board = gameplayHandler.Update(gameSetup); //Update gameplay
+                case PlayBoard.gameState.attackerTurn:
+                    board = gameplayHandler.Update(gameSetup);
                     break;
 
-                case GameSetup.gameState.whiteMoveing:
+                case PlayBoard.gameState.attackerMoveing:
+                    board.ChangeTurn();
                     break;
 
-                case GameSetup.gameState.whiteFighting:
+                case PlayBoard.gameState.attackerFighting:
+                    board.ChangeTurn();
                     break;
 
-                case GameSetup.gameState.blackTurn:
-                    board = gameplayHandler.Update(gameSetup); //Update gameplay
+                case PlayBoard.gameState.defenderTurn:
+                    board = gameplayHandler.Update(gameSetup);
                     break;
 
-                case GameSetup.gameState.blackMoveing:
+                case PlayBoard.gameState.defenderMoveing:
+                    board.ChangeTurn();
                     break;
 
-                case GameSetup.gameState.blackFighting:
+                case PlayBoard.gameState.defenderFighting:
+                    board.ChangeTurn();
                     break;
 
-                case GameSetup.gameState.whiteWin:
+                case PlayBoard.gameState.attackerWin:
                     break;
 
-                case GameSetup.gameState.blackWin:
+                case PlayBoard.gameState.defenderWin:
                     break;
             }
 
@@ -135,8 +139,8 @@ namespace VikingChess
             spriteHandler.DrawPieces(board, gameplayHandler.SelectedPiece, spritePieceBlack, spritePieceBlackKing, spritePieceWhite, spriteSelectedPiece);
 
             //Draw text
-            spriteBatch.DrawString(normalFont, "Game state: " + gameSetup.State.ToString(), new Vector2(380, 20), Color.Black);
-            spriteBatch.DrawString(normalFont, "Turn: " + gameSetup.Turn.ToString(), new Vector2(380, 40), Color.Black);
+            spriteBatch.DrawString(normalFont, "Game state: " + board.State.ToString(), new Vector2(380, 20), Color.Black);
+            spriteBatch.DrawString(normalFont, "Turn: " + board.Turn.ToString(), new Vector2(380, 40), Color.Black);
             spriteBatch.DrawString(normalFont, "Fields: ", new Vector2(380, 60), Color.Black);
 
             //Base draw
