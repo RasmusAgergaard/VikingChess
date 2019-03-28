@@ -50,7 +50,7 @@ namespace ClassLibrary
 
                     if (Board.State == PlayBoard.gameState.attackerFighting || Board.State == PlayBoard.gameState.defenderFighting)
                     {
-                        KillCheck(column, row);
+                        KillCheck(column, row); 
                     }
                 }
             }
@@ -73,7 +73,7 @@ namespace ClassLibrary
 
             if (collisionHandler.PointColisionWithBox(mouseX, mouseY, posX, posY, width, height))
             {
-                if (MousePress(mouseState) == true)
+                if (MousePress(mouseState))
                 {
                     SelectPiece(column, row, gameSetup);
                     MovePiece(column, row);
@@ -168,28 +168,38 @@ namespace ClassLibrary
             //If the piece to check is not null, and is an enemy (opposite team)
             if (Board.Board[column, row] != null && Board.Board[column, row].Team == enemyTeam)
             {
-                KillCheckNormalPiece(column, row, myTeam);
-                KillCheckKingPiece(column, row, myTeam);
+                if (Board.Board[column, row].Type == Piece.types.normal)
+                {
+                    KillCheckNormalPiece(column, row, myTeam);
+                }
+
+                if (Board.Board[column, row].Type == Piece.types.king)
+                {
+                    KillCheckKingPiece(column, row, myTeam);
+                } 
             }
         }
 
         private void KillCheckNormalPiece(int column, int row, Piece.teams myTeam)
         {
-            //Column check
-            if (column > 0 && column < Board.Columns - 1)
+            if (Board.Board[column, row].Type == Piece.types.normal)
             {
-                if (IsThereAPieceOnEachSide(Board.Board[column + 1, row], Board.Board[column - 1, row], myTeam))
+                //Column check
+                if (column > 0 && column < Board.Columns - 1)
                 {
-                    KillPiece(column, row);
+                    if (IsThereAPieceOnEachSide(Board.Board[column + 1, row], Board.Board[column - 1, row], myTeam))
+                    {
+                        KillPiece(column, row);
+                    }
                 }
-            }
 
-            //Row check
-            if (row > 0 && row < Board.Rows - 1)
-            {
-                if (IsThereAPieceOnEachSide(Board.Board[column, row + 1], Board.Board[column, row - 1], myTeam))
+                //Row check
+                if (row > 0 && row < Board.Rows - 1)
                 {
-                    KillPiece(column, row);
+                    if (IsThereAPieceOnEachSide(Board.Board[column, row + 1], Board.Board[column, row - 1], myTeam))
+                    {
+                        KillPiece(column, row);
+                    }
                 }
             }
         }
@@ -213,14 +223,14 @@ namespace ClassLibrary
             {
                 if (IsThereAPieceOnEachSideWithoutTurnCheck(Board.Board[column, row + 1], Board.Board[column, row - 1], myTeam))
                 {
-                    killKingRow = true;
+                    killKingColumn = true;
                 }
             }
 
             if (killKingColumn && killKingRow)
             {
                 KillPiece(column, row);
-            }
+            }  
         }
 
         private bool IsThereAPieceOnEachSide(Piece pieceToCheck1, Piece pieceToCheck2, Piece.teams myTeam)
