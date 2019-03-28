@@ -97,6 +97,7 @@ namespace VikingChess
                     break;
 
                 case PlayBoard.gameState.attackerFighting:
+                    board = gameplayHandler.Update(gameSetup);
                     board.ChangeTurn();
                     break;
 
@@ -109,6 +110,7 @@ namespace VikingChess
                     break;
 
                 case PlayBoard.gameState.defenderFighting:
+                    board = gameplayHandler.Update(gameSetup);
                     board.ChangeTurn();
                     break;
 

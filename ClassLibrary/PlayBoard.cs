@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Remoting.Contexts;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ClassLibrary
@@ -142,6 +143,7 @@ namespace ClassLibrary
 
                 case gameState.attackerTurn:
                     State = gameState.attackerMoveing;
+                    Turn += 1;
                     break;
 
                 case gameState.attackerMoveing:
@@ -154,6 +156,7 @@ namespace ClassLibrary
 
                 case gameState.defenderTurn:
                     State = gameState.defenderMoveing;
+                    Turn += 1;
                     break;
 
                 case gameState.defenderMoveing:

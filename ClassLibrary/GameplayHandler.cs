@@ -43,9 +43,15 @@ namespace ClassLibrary
             {
                 for (int row = 0; row < Board.Rows; row++)
                 {
-                    PieceControl(CurrentMouseState, MousePoint, column, row, gameSetup);
+                    if (Board.State == PlayBoard.gameState.attackerTurn || Board.State == PlayBoard.gameState.defenderTurn)
+                    {
+                        PieceControl(CurrentMouseState, MousePoint, column, row, gameSetup);
+                    }
 
-                    KillCheck(column, row);
+                    if (Board.State == PlayBoard.gameState.attackerFighting || Board.State == PlayBoard.gameState.defenderFighting)
+                    {
+                        KillCheck(column, row);
+                    }
                 }
             }
 
@@ -133,99 +139,120 @@ namespace ClassLibrary
                     //Move piece
                     Board.Board[column, row] = SelectedPiece;
                     Board.Board[SelectedPieceColumn, SelectedPieceRow] = null;
-                    Board.Board[column, row].MovedInTurn = Board.Turn;
                     SelectedPiece = null;
 
                     Board.ChangeTurn();
+                    Board.Board[column, row].MovedInTurn = Board.Turn;
                 }
             }
         }
 
+        //Kill check
         private void KillCheck(int column, int row)
         {
-            if (Board.Board[column, row] != null)
+            //Set teams
+            Piece.teams myTeam = Piece.teams.attackers;
+            Piece.teams enemyTeam = Piece.teams.defenders;
+
+            if (Board.State == PlayBoard.gameState.attackerFighting)
             {
-                Piece.teams myTeam;
-                Piece.teams enemyTeam;
+                myTeam = Piece.teams.attackers;
+                enemyTeam = Piece.teams.defenders;
+            }
+            if (Board.State == PlayBoard.gameState.defenderFighting)
+            {
+                myTeam = Piece.teams.defenders;
+                enemyTeam = Piece.teams.attackers;
+            }
 
-                if (Board.State == PlayBoard.gameState.attackerFighting)
+            //If the piece to check is not null, and is an enemy (opposite team)
+            if (Board.Board[column, row] != null && Board.Board[column, row].Team == enemyTeam)
+            {
+                KillCheckNormalPiece(column, row, myTeam);
+                KillCheckKingPiece(column, row, myTeam);
+            }
+        }
+
+        private void KillCheckNormalPiece(int column, int row, Piece.teams myTeam)
+        {
+            //Column check
+            if (column > 0 && column < Board.Columns - 1)
+            {
+                if (IsThereAPieceOnEachSide(Board.Board[column + 1, row], Board.Board[column - 1, row], myTeam))
                 {
-                    myTeam = Piece.teams.attackers;
-                    enemyTeam = Piece.teams.defenders;
+                    KillPiece(column, row);
                 }
-                else
+            }
+
+            //Row check
+            if (row > 0 && row < Board.Rows - 1)
+            {
+                if (IsThereAPieceOnEachSide(Board.Board[column, row + 1], Board.Board[column, row - 1], myTeam))
                 {
-                    myTeam = Piece.teams.defenders;
-                    enemyTeam = Piece.teams.attackers;
+                    KillPiece(column, row);
                 }
+            }
+        }
 
-                //If the piece is a enemy
-                if (Board.Board[column, row].Team == enemyTeam)
+        private void KillCheckKingPiece(int column, int row, Piece.teams myTeam)
+        {
+            var killKingColumn = false;
+            var killKingRow = false;
+
+            //Column check
+            if (column > 0 && column < Board.Columns - 1)
+            {
+                if (IsThereAPieceOnEachSideWithoutTurnCheck(Board.Board[column + 1, row], Board.Board[column - 1, row], myTeam))
                 {
-                    bool kingTakenColumn = false;
-                    bool kingTakenRow = false;
+                    killKingColumn = true;
+                }
+            }
 
-                    //Column
-                    if (column > 0 && column < Board.Columns - 1)
+            //Row check
+            if (row > 0 && row < Board.Rows - 1)
+            {
+                if (IsThereAPieceOnEachSideWithoutTurnCheck(Board.Board[column, row + 1], Board.Board[column, row - 1], myTeam))
+                {
+                    killKingRow = true;
+                }
+            }
+
+            if (killKingColumn && killKingRow)
+            {
+                KillPiece(column, row);
+            }
+        }
+
+        private bool IsThereAPieceOnEachSide(Piece pieceToCheck1, Piece pieceToCheck2, Piece.teams myTeam)
+        {
+            if (pieceToCheck1 != null && pieceToCheck2 != null)
+            {
+                //Is there a piece on both sides
+                if (pieceToCheck1.Team == myTeam && pieceToCheck2.Team == myTeam)
+                {
+                    //Is one of them was moved in the same turn
+                    if (pieceToCheck1.MovedInTurn == Board.Turn || pieceToCheck2.MovedInTurn == Board.Turn)
                     {
-                        var checkColumn1 = Board.Board[column + 1, row];
-                        var checkColumn2 = Board.Board[column - 1, row];
-
-                        //Null check
-                        if (checkColumn1 != null && checkColumn2 != null)
-                        {
-                            //Is there a piece on both sides
-                            if (checkColumn1.Team == myTeam && checkColumn2.Team == myTeam)
-                            {
-                                //Is one of them was moved in the same turn
-                                if (checkColumn1.MovedInTurn == Board.Turn || checkColumn2.MovedInTurn == Board.Turn)
-                                {
-                                    //Is the piece a king, then set varible
-                                    if (Board.Board[column, row].Type == Piece.types.king)
-                                    {
-                                        kingTakenColumn = true;
-                                    }
-                                    //If not - kill it
-                                    else
-                                    {
-                                        KillPiece(column, row);
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    //Row
-                    if (row > 0 && row < Board.Rows - 1)
-                    {
-                        var checkRow1 = Board.Board[column, row + 1];
-                        var checkRow2 = Board.Board[column, row - 1];
-
-                        //Null check
-                        if (checkRow1 != null && checkRow2 != null)
-                        {
-                            //Is there a piece on both sides
-                            if (checkRow1.Team == myTeam && checkRow2.Team == myTeam)
-                            {
-                                //Is one of them the last moved piece
-                                if (checkRow1.MovedInTurn == Board.Turn || checkRow2.MovedInTurn == Board.Turn)
-                                {
-                                    //Is the piece a king, then set varible
-                                    if (Board.Board[column, row].Type == Piece.types.king)
-                                    {
-                                        kingTakenRow = true;
-                                    }
-                                    //If not - kill it
-                                    else
-                                    {
-                                        KillPiece(column, row);
-                                    }
-                                }
-                            }
-                        }
+                        return true;
                     }
                 }
-            } 
+            }
+
+            return false;
+        }
+
+        private bool IsThereAPieceOnEachSideWithoutTurnCheck(Piece pieceToCheck1, Piece pieceToCheck2, Piece.teams myTeam)
+        {
+            if (pieceToCheck1 != null && pieceToCheck2 != null)
+            {
+                //Is there a piece on both sides
+                if (pieceToCheck1.Team == myTeam && pieceToCheck2.Team == myTeam)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private void KillPiece(int column, int row)
