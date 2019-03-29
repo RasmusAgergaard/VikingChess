@@ -13,11 +13,6 @@ namespace ClassLibrary
         CollisionHandler collisionHandler = new CollisionHandler();
         LegalMove legalMove = new LegalMove();
 
-        public GameplayHandler()
-        {
-
-        }
-
         public GameplayHandler(PlayBoard board)
         {
             Board = board;
@@ -31,10 +26,8 @@ namespace ClassLibrary
         public MouseState OldMouseState { get; set; }
         public Point MousePoint { get; set; }
 
-        //Main update method
         public PlayBoard Update(GameSetup gameSetup)
         {
-            //Update mouse
             CurrentMouseState = Mouse.GetState();
             MousePoint = new Point(CurrentMouseState.X, CurrentMouseState.Y);
 
@@ -48,20 +41,18 @@ namespace ClassLibrary
                         PieceControl(CurrentMouseState, MousePoint, column, row, gameSetup);
                     }
 
-                    if (Board.State == PlayBoard.gameState.attackerFighting || Board.State == PlayBoard.gameState.defenderFighting)
+                    if (Board.Board[column, row] != null && (Board.State == PlayBoard.gameState.attackerFighting || Board.State == PlayBoard.gameState.defenderFighting))
                     {
                         KillCheck(column, row); 
                     }
                 }
             }
 
-            //WinCoditionCheck
+            WinConditionCheck();
 
-            //Return the updated version of the board
             return Board;
         }
 
-        //Piece control
         public void PieceControl(MouseState mouseState, Point mousePoint, int column, int row, GameSetup gameSetup)
         {
             var mouseX = mousePoint.X;
@@ -84,7 +75,6 @@ namespace ClassLibrary
             }
         }
 
-        //Mouse press
         private bool MousePress(MouseState mouseState)
         {
             var mousePressed = false;
@@ -98,7 +88,6 @@ namespace ClassLibrary
             return mousePressed;
         }
 
-        //Select piece
         private void SelectPiece(int column, int row, GameSetup gameSetup)
         {
             if (Board.Board[column, row] != null)
@@ -120,7 +109,6 @@ namespace ClassLibrary
             }
         }
 
-        //Deselect piece
         private void DeselectPiece(int column, int row)
         {
             if (Board.Board[column, row] == null && SelectedPiece != null)
@@ -129,7 +117,6 @@ namespace ClassLibrary
             } 
         }
 
-        //Move piece
         private void MovePiece(int column, int row)
         {
             if (SelectedPiece != null)
@@ -147,7 +134,6 @@ namespace ClassLibrary
             }
         }
 
-        //Kill check
         private void KillCheck(int column, int row)
         {
             //Set teams
@@ -165,15 +151,15 @@ namespace ClassLibrary
                 enemyTeam = Piece.teams.attackers;
             }
 
-            //If the piece to check is not null, and is an enemy (opposite team)
-            if (Board.Board[column, row] != null && Board.Board[column, row].Team == enemyTeam)
+            //If the piece is an enemy (opposite team)
+            if (Board.Board[column, row].Team == enemyTeam)
             {
-                if (Board.Board[column, row].Type == Piece.types.normal)
+                if (Board.Board[column, row] != null && Board.Board[column, row].Type == Piece.types.normal)
                 {
                     KillCheckNormalPiece(column, row, myTeam);
                 }
 
-                if (Board.Board[column, row].Type == Piece.types.king)
+                if (Board.Board[column, row] != null && Board.Board[column, row].Type == Piece.types.king)
                 {
                     KillCheckKingPiece(column, row, myTeam);
                 } 
@@ -223,7 +209,7 @@ namespace ClassLibrary
             {
                 if (IsThereAPieceOnEachSideWithoutTurnCheck(Board.Board[column, row + 1], Board.Board[column, row - 1], myTeam))
                 {
-                    killKingColumn = true;
+                    killKingRow = true;
                 }
             }
 
@@ -268,6 +254,59 @@ namespace ClassLibrary
         private void KillPiece(int column, int row)
         {
             Board.Board[column, row] = null;
+        }
+
+        private void WinConditionCheck()
+        {
+            if (Board.State == PlayBoard.gameState.attackerTurn || Board.State == PlayBoard.gameState.defenderTurn)
+            {
+                var doesAttackerKingExist = false;
+                var doesDefenderKingExist = false;
+
+                for (int column = 0; column < Board.Columns; column++)
+                {
+                    for (int row = 0; row < Board.Rows; row++)
+                    {
+                        if (Board.Board[column, row] != null && Board.Board[column, row].Type == Piece.types.king)
+                        {
+                            if (Board.Board[column, row].Team == Piece.teams.attackers)
+                            {
+                                doesAttackerKingExist = true;
+                            }
+
+                            if (Board.Board[column, row].Team == Piece.teams.defenders)
+                            {
+                                doesDefenderKingExist = true;
+                            }
+                        }
+                    }
+                }
+
+                if (Board.DoesAttackersHaveKing && !doesAttackerKingExist)
+                {
+                    Board.State = PlayBoard.gameState.defenderWin;
+                }
+
+                if (Board.DoesDefendersHaveKing && !doesDefenderKingExist)
+                {
+                    Board.State = PlayBoard.gameState.attackerWin;
+                }
+            }
+        }
+
+        //TODO: Make sure if this should be used
+        private bool DoesKingStillExist(int column, int row, Piece.teams team)
+        {
+            var doesKingExist = false;
+
+            if (Board.Board[column, row] != null
+                && Board.Board[column, row].Team == team
+                && Board.Board[column, row].Type == Piece.types.king)
+            {
+                
+            }
+
+            return doesKingExist;
         }
     }
 }

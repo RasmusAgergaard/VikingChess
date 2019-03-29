@@ -14,15 +14,7 @@ namespace ClassLibrary
     {
         public enum gameState { gameStart, attackerTurn, attackerMoveing, attackerFighting, defenderTurn, defenderMoveing, defenderFighting, attackerWin, defenderWin };
 
-
-        //Constructor
-        public PlayBoard()
-        {
-
-        }
-
-        //Overloaded Constructor
-        public PlayBoard(int columns, int rows, Vector2 position)
+        public PlayBoard(int columns, int rows, Vector2 position, bool doesAttackersHaveKing, bool doesDefendersHaveKing)
         {
             Columns = columns;
             Rows = rows;
@@ -37,6 +29,8 @@ namespace ClassLibrary
             FieldHeight = (float)BoardHeight / Columns;
             State = gameState.attackerTurn;
             Turn = 0;
+            DoesAttackersHaveKing = doesAttackersHaveKing;
+            DoesDefendersHaveKing = doesDefendersHaveKing;
 
             AddPiecesToBoard();
             CalculateBoardPositions();
@@ -55,6 +49,8 @@ namespace ClassLibrary
         public float FieldHeight { get; set; }
         public gameState State { get; set; }
         public int Turn { get; set; }
+        public bool DoesAttackersHaveKing { get; set; }
+        public bool DoesDefendersHaveKing { get; set; }
 
         public void AddPiecesToBoard()
         {

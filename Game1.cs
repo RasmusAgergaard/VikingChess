@@ -45,7 +45,7 @@ namespace VikingChess
 
         protected override void Initialize()
         {
-            board = new PlayBoard(11, 11, new Vector2(0));
+            board = new PlayBoard(11, 11, new Vector2(0), doesAttackersHaveKing: false, doesDefendersHaveKing: true);
             gameplayHandler = new GameplayHandler(board);
             collisionHandler = new CollisionHandler();
 
