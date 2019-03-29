@@ -33,6 +33,7 @@ namespace VikingChessBL
             DoesDefendersHaveKing = doesDefendersHaveKing;
 
             AddPiecesToBoard();
+            AddRefugesToBoard();
             CalculateBoardPositions();
         }
 
@@ -52,7 +53,7 @@ namespace VikingChessBL
         public bool DoesAttackersHaveKing { get; set; }
         public bool DoesDefendersHaveKing { get; set; }
 
-        public void AddPiecesToBoard()
+        private void AddPiecesToBoard()
         {
             var startPosition = new Vector2(0f);
 
@@ -103,6 +104,17 @@ namespace VikingChessBL
             Board[10, 0] = new Piece(Piece.teams.refuge, Piece.types.normal, startPosition);
             Board[10, 10] = new Piece(Piece.teams.refuge, Piece.types.normal, startPosition);
             //Board[5, 5] aka the middle refuge haft to be added when the king moves away
+        }
+
+        private void AddRefugesToBoard()
+        {
+            var startPosition = new Vector2(0f);
+
+            Board[0, 0] = new Piece(Piece.teams.refuge, Piece.types.normal, startPosition);
+            Board[0, 10] = new Piece(Piece.teams.refuge, Piece.types.normal, startPosition);
+            //TODO add when king is gone
+            Board[10, 0] = new Piece(Piece.teams.refuge, Piece.types.normal, startPosition);
+            Board[10, 10] = new Piece(Piece.teams.refuge, Piece.types.normal, startPosition);
         }
 
         private void CalculateBoardPositions()

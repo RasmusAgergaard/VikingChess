@@ -29,6 +29,7 @@ namespace VikingChessUI
         Texture2D spritePieceWhite;
         Texture2D spriteSelectedPiece;
         Texture2D spriteLegalMove;
+        Texture2D spriteRefuge;
 
         //Fonts
         SpriteFont normalFont;
@@ -65,6 +66,7 @@ namespace VikingChessUI
             spritePieceWhite = Content.Load<Texture2D>(@"Pieces\piece_white");
             spriteSelectedPiece = Content.Load<Texture2D>(@"Pieces\selected_ring");
             spriteLegalMove = Content.Load<Texture2D>(@"Board objects\legal_move");
+            spriteRefuge = Content.Load<Texture2D>(@"Pieces\refuge");
 
             //Fonts
             normalFont = Content.Load<SpriteFont>(@"Fonts\normalFont");
@@ -137,6 +139,7 @@ namespace VikingChessUI
 
             //Draw sprite
             spriteHandler.DrawSprite(spriteBoard, board.Position);
+            spriteHandler.DrawRefuges(board, spriteRefuge);
             spriteHandler.DrawLegalMoves(board, spriteLegalMove, gameplayHandler.SelectedPiece);
             spriteHandler.DrawPieces(board, gameplayHandler.SelectedPiece, spritePieceBlack, spritePieceBlackKing, spritePieceWhite, spriteSelectedPiece);
 

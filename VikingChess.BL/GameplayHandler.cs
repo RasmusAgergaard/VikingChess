@@ -53,7 +53,7 @@ namespace VikingChessBL
             return Board;
         }
 
-        public void PieceControl(MouseState mouseState, Point mousePoint, int column, int row, GameSetup gameSetup)
+        private void PieceControl(MouseState mouseState, Point mousePoint, int column, int row, GameSetup gameSetup)
         {
             var mouseX = mousePoint.X;
             var mouseY = mousePoint.Y;
@@ -154,12 +154,12 @@ namespace VikingChessBL
             //If the piece is an enemy (opposite team)
             if (Board.Board[column, row].Team == enemyTeam)
             {
-                if (Board.Board[column, row] != null && Board.Board[column, row].Type == Piece.types.normal)
+                if (Board.Board[column, row] != null)
                 {
                     KillCheckNormalPiece(column, row, myTeam);
                 }
 
-                if (Board.Board[column, row] != null && Board.Board[column, row].Type == Piece.types.king)
+                if (Board.Board[column, row] != null)
                 {
                     KillCheckKingPiece(column, row, myTeam);
                 } 
@@ -192,45 +192,62 @@ namespace VikingChessBL
 
         private void KillCheckKingPiece(int column, int row, Piece.teams myTeam)
         {
-            var killKingColumn = false;
-            var killKingRow = false;
-
-            //Column check
-            if (column > 0 && column < Board.Columns - 1)
+            if (Board.Board[column, row].Type == Piece.types.king)
             {
-                if (IsThereAPieceOnEachSideWithoutTurnCheck(Board.Board[column + 1, row], Board.Board[column - 1, row], myTeam))
+                var killKingColumn = false;
+                var killKingRow = false;
+
+                if (column > 0 && column < Board.Columns - 1)
                 {
-                    killKingColumn = true;
+                    if (IsThereAPieceOnEachSideWithoutTurnCheck(Board.Board[column + 1, row], Board.Board[column - 1, row], myTeam))
+                    {
+                        killKingColumn = true;
+                    }
                 }
-            }
 
-            //Row check
-            if (row > 0 && row < Board.Rows - 1)
-            {
-                if (IsThereAPieceOnEachSideWithoutTurnCheck(Board.Board[column, row + 1], Board.Board[column, row - 1], myTeam))
+                if (row > 0 && row < Board.Rows - 1)
                 {
-                    killKingRow = true;
+                    if (IsThereAPieceOnEachSideWithoutTurnCheck(Board.Board[column, row + 1], Board.Board[column, row - 1], myTeam))
+                    {
+                        killKingRow = true;
+                    }
                 }
-            }
 
-            if (killKingColumn && killKingRow)
-            {
-                KillPiece(column, row);
-            }  
+                if (killKingColumn && killKingRow)
+                {
+                    KillPiece(column, row);
+                }
+            } 
         }
 
         private bool IsThereAPieceOnEachSide(Piece pieceToCheck1, Piece pieceToCheck2, Piece.teams myTeam)
         {
             if (pieceToCheck1 != null && pieceToCheck2 != null)
             {
-                //Is there a piece on both sides
-                if (pieceToCheck1.Team == myTeam && pieceToCheck2.Team == myTeam)
+                var piece1 = false;
+                var piece2 = false;
+
+                if (pieceToCheck1.Team == myTeam && pieceToCheck1.MovedInTurn == Board.Turn)
                 {
-                    //Is one of them was moved in the same turn
-                    if (pieceToCheck1.MovedInTurn == Board.Turn || pieceToCheck2.MovedInTurn == Board.Turn)
-                    {
-                        return true;
-                    }
+                    piece1 = true;
+                }
+                else if (pieceToCheck1.Team == Piece.teams.refuge)
+                {
+                    piece1 = true;
+                }
+
+                if (pieceToCheck2.Team == myTeam && pieceToCheck2.MovedInTurn == Board.Turn)
+                {
+                    piece2 = true;
+                }
+                else if (pieceToCheck2.Team == Piece.teams.refuge)
+                {
+                    piece2 = true;
+                }
+
+                if (piece1 && piece2)
+                {
+                    return true;
                 }
             }
 
@@ -241,7 +258,6 @@ namespace VikingChessBL
         {
             if (pieceToCheck1 != null && pieceToCheck2 != null)
             {
-                //Is there a piece on both sides
                 if (pieceToCheck1.Team == myTeam && pieceToCheck2.Team == myTeam)
                 {
                     return true;
@@ -292,21 +308,6 @@ namespace VikingChessBL
                     Board.State = PlayBoard.gameState.attackerWin;
                 }
             }
-        }
-
-        //TODO: Make sure if this should be used
-        private bool DoesKingStillExist(int column, int row, Piece.teams team)
-        {
-            var doesKingExist = false;
-
-            if (Board.Board[column, row] != null
-                && Board.Board[column, row].Team == team
-                && Board.Board[column, row].Type == Piece.types.king)
-            {
-                
-            }
-
-            return doesKingExist;
         }
     }
 }

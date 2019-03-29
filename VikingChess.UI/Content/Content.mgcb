@@ -80,6 +80,18 @@
 /processorParam:TextureFormat=Color
 /build:Pieces/piece_white.png
 
+#begin Pieces/refuge.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Pieces/refuge.png
+
 #begin Pieces/selected_ring.png
 /importer:TextureImporter
 /processor:TextureProcessor

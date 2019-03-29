@@ -45,6 +45,20 @@ namespace VikingChessUI
             }
         }
 
+        public void DrawRefuges(PlayBoard board, Texture2D sprite)
+        {
+            for (int column = 0; column < board.Columns; column++)
+            {
+                for (int row = 0; row < board.Rows; row++)
+                {
+                    if (board.Board[column, row] != null && board.Board[column, row].Team == Piece.teams.refuge)
+                    {
+                        DrawSprite(sprite, board.BoardPositions[column, row]);
+                    }
+                }
+            }
+        }
+
         public void DrawPieces(PlayBoard board, Piece selectedPiece, Texture2D spritePieceBlack, Texture2D spritePieceBlackKing, Texture2D spritePieceWhite, Texture2D spriteSelectedPiece)
         {
             for (int column = 0; column < board.Columns; column++)

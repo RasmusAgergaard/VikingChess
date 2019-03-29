@@ -45,6 +45,7 @@ namespace VikingChessBL
 
         private void RemoveRefuges(PlayBoard board)
         {
+            //TODO: Remove the actual refuges, and not magical numbers
             board.LegalMoves[0, 0] = null;
             board.LegalMoves[0, 10] = null;
             board.LegalMoves[10, 0] = null;

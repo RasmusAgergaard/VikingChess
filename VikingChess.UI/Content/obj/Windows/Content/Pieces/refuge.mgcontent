@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <SourceFile>C:/Users/Rasmus/Desktop/Main drive/Programming/VikingChess/VikingChess.UI/Content/Board objects/legal_move.png</SourceFile>
-  <SourceTime>2019-03-27T10:35:00.5339291+01:00</SourceTime>
-  <DestFile>C:/Users/Rasmus/Desktop/Main drive/Programming/VikingChess/VikingChess.UI/Content/bin/Windows/Content/Board objects/legal_move.xnb</DestFile>
-  <DestTime>2019-03-29T14:21:42.105065+01:00</DestTime>
+  <SourceFile>C:/Users/Rasmus/Desktop/Main drive/Programming/VikingChess/VikingChess.UI/Content/Pieces/refuge.png</SourceFile>
+  <SourceTime>2019-03-29T14:06:06.7822739+01:00</SourceTime>
+  <DestFile>C:/Users/Rasmus/Desktop/Main drive/Programming/VikingChess/VikingChess.UI/Content/bin/Windows/Content/Pieces/refuge.xnb</DestFile>
+  <DestTime>2019-03-29T14:21:42.5108153+01:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2018-09-23T23:55:52+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
