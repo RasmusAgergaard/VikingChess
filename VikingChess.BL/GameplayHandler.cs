@@ -220,7 +220,7 @@ namespace VikingChessBL
             } 
         }
 
-        private bool IsThereAPieceOnEachSide(Piece pieceToCheck1, Piece pieceToCheck2, Piece.teams myTeam)
+        public bool IsThereAPieceOnEachSide(Piece pieceToCheck1, Piece pieceToCheck2, Piece.teams myTeam)
         {
             if (pieceToCheck1 != null && pieceToCheck2 != null)
             {
