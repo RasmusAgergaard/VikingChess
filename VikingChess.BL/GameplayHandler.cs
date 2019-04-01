@@ -166,7 +166,7 @@ namespace VikingChessBL
             }
         }
 
-        private void KillCheckNormalPiece(int column, int row, Piece.teams myTeam)
+        public void KillCheckNormalPiece(int column, int row, Piece.teams myTeam)
         {
             if (Board.Board[column, row].Type == Piece.types.normal)
             {
@@ -190,7 +190,7 @@ namespace VikingChessBL
             }
         }
 
-        private void KillCheckKingPiece(int column, int row, Piece.teams myTeam)
+        public void KillCheckKingPiece(int column, int row, Piece.teams myTeam)
         {
             if (Board.Board[column, row].Type == Piece.types.king)
             {
@@ -275,7 +275,7 @@ namespace VikingChessBL
             Board.Board[column, row] = null;
         }
 
-        private void WinConditionCheck()
+        public void WinConditionCheck()
         {
             if (Board.State == PlayBoard.gameState.attackerTurn || Board.State == PlayBoard.gameState.defenderTurn)
             {
