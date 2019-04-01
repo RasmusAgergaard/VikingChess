@@ -1,5 +1,3 @@
-C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\VikingChess.UI\bin\Windows\x86\Debug\Content\piece.xnb
-C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\VikingChess.UI\bin\Windows\x86\Debug\Content\turn.xnb
 C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\VikingChess.UI\bin\Windows\x86\Debug\Content\Pieces\piece_black.xnb
 C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\VikingChess.UI\bin\Windows\x86\Debug\Content\Pieces\piece_black_king.xnb
 C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\VikingChess.UI\bin\Windows\x86\Debug\Content\Pieces\piece_white.xnb
@@ -8,6 +6,8 @@ C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\VikingChess.UI\bin\Wi
 C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\VikingChess.UI\bin\Windows\x86\Debug\Content\Fonts\normalFont.xnb
 C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\VikingChess.UI\bin\Windows\x86\Debug\Content\Board objects\legal_move.xnb
 C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\VikingChess.UI\bin\Windows\x86\Debug\Content\board_360x360.xnb
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\VikingChess.UI\bin\Windows\x86\Debug\Content\piece.xnb
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\VikingChess.UI\bin\Windows\x86\Debug\Content\turn.xnb
 C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\VikingChess.UI\bin\Windows\x86\Debug\VikingChess.exe.config
 C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\VikingChess.UI\bin\Windows\x86\Debug\VikingChess.exe
 C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\VikingChess.UI\bin\Windows\x86\Debug\VikingChess.pdb

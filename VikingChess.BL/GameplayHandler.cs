@@ -227,34 +227,37 @@ namespace VikingChessBL
                 var piece1 = false;
                 var piece2 = false;
 
-                if (pieceToCheck1.Team == myTeam && pieceToCheck1.MovedInTurn == Board.Turn)
+                if (pieceToCheck1.MovedInTurn == Board.Turn || pieceToCheck2.MovedInTurn == Board.Turn)
                 {
-                    piece1 = true;
-                }
-                else if (pieceToCheck1.Team == Piece.teams.refuge)
-                {
-                    piece1 = true;
-                }
+                    if (pieceToCheck1.Team == myTeam)
+                    {
+                        piece1 = true;
+                    }
+                    else if (pieceToCheck1.Team == Piece.teams.refuge)
+                    {
+                        piece1 = true;
+                    }
 
-                if (pieceToCheck2.Team == myTeam && pieceToCheck2.MovedInTurn == Board.Turn)
-                {
-                    piece2 = true;
-                }
-                else if (pieceToCheck2.Team == Piece.teams.refuge)
-                {
-                    piece2 = true;
-                }
+                    if (pieceToCheck2.Team == myTeam)
+                    {
+                        piece2 = true;
+                    }
+                    else if (pieceToCheck2.Team == Piece.teams.refuge)
+                    {
+                        piece2 = true;
+                    }
 
-                if (piece1 && piece2)
-                {
-                    return true;
+                    if (piece1 && piece2)
+                    {
+                        return true;
+                    }
                 }
             }
 
             return false;
         }
 
-        private bool IsThereAPieceOnEachSideWithoutTurnCheck(Piece pieceToCheck1, Piece pieceToCheck2, Piece.teams myTeam)
+        public bool IsThereAPieceOnEachSideWithoutTurnCheck(Piece pieceToCheck1, Piece pieceToCheck2, Piece.teams myTeam)
         {
             if (pieceToCheck1 != null && pieceToCheck2 != null)
             {
