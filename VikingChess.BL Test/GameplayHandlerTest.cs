@@ -11,11 +11,15 @@ namespace VikingChess.BL_Test
         GameSetup gameSetup = new GameSetup();
         CollisionHandler collisionHandler = new CollisionHandler();
         LegalMove legalMove = new LegalMove();
-        PlayBoard board = new PlayBoard(11, 11, new Vector2(0), doesAttackersHaveKing: false, doesDefendersHaveKing: true);
+        PlayBoard board = new PlayBoard(11, 11, new Vector2(0));
         GameplayHandler gameplayHandler;
 
         public GameplayHandlerTest()
         {
+            board.SetRules(doesAttackersHaveKing: false,
+                           doesDefendersHaveKing: true,
+                           doesAttackerKingWantsToFlee: false,
+                           doesDefenderKingWantsToFlee: true);
             Board = board;
             gameplayHandler = new GameplayHandler(Board);
             Board.Turn = 5;

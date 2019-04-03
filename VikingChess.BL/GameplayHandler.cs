@@ -320,15 +320,52 @@ namespace VikingChessBL
             }
         }
 
-        private void KingHasEscaped()
+        private void KingHasEscaped() //TODO: Test and make sure it works..
         {
-            //TODO: Create KingHasEscaped
+            var hasAttackerKingFled = false;
+            var hasDefenderKingFled = false;
 
-            //Find square next to refuges
+            for (int column = 0; column < Board.Columns; column++)
+            {
+                for (int row = 0; row < Board.Rows; row++)
+                {
+                    if (Board.Board[column, row] != null && Board.Board[column, row].Type == Piece.types.kingPiece)
+                    {
+                        var positions = new List<Piece>();
 
+                        if (column + 1 < Board.Columns) {positions.Add(Board.Board[column + 1, row]);}
+                        if (column - 1 > 0)             {positions.Add(Board.Board[column - 1, row]);}
+                        if (row + 1 < Board.Rows)       {positions.Add(Board.Board[column, row + 1]);}
+                        if (row - 1 > 0)                {positions.Add(Board.Board[column, row - 1]);}
 
-            //Check if king is on one of them
+                        foreach (var position in positions)
+                        {
+                            if (position != null && position.Team == Piece.teams.refuge && position.Type == Piece.types.cornerRefuge)
+                            {
+                                if (Board.Board[column, row].Team == Piece.teams.attackers)
+                                {
+                                    hasAttackerKingFled = true;
+                                }
 
+                                if (Board.Board[column, row].Team == Piece.teams.defenders)
+                                {
+                                    hasDefenderKingFled = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (Board.DoesAttackerKingWantsToFlee && hasAttackerKingFled)
+            {
+                Board.State = PlayBoard.gameState.attackerWin;
+            }
+
+            if (Board.DoesDefenderKingWantsToFlee && hasDefenderKingFled)
+            {
+                Board.State = PlayBoard.gameState.defenderWin;
+            }
         }
     }
 }
