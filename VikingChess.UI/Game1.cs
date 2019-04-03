@@ -46,7 +46,12 @@ namespace VikingChessUI
 
         protected override void Initialize()
         {
-            board = new PlayBoard(11, 11, new Vector2(0), doesAttackersHaveKing: false, doesDefendersHaveKing: true);
+            board = new PlayBoard(11, 11, new Vector2(0));
+            board.SetRules(doesAttackersHaveKing: false,
+                           doesDefendersHaveKing: true,
+                           doesAttackerKingWantsToFlee: false,
+                           doesDefenderKingWantsToFlee: true);
+
             gameplayHandler = new GameplayHandler(board);
             collisionHandler = new CollisionHandler();
 

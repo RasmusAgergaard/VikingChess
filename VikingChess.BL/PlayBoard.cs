@@ -14,7 +14,7 @@ namespace VikingChessBL
     {
         public enum gameState { gameStart, attackerTurn, attackerMoveing, attackerFighting, defenderTurn, defenderMoveing, defenderFighting, attackerWin, defenderWin };
 
-        public PlayBoard(int columns, int rows, Vector2 position, bool doesAttackersHaveKing, bool doesDefendersHaveKing)
+        public PlayBoard(int columns, int rows, Vector2 position)
         {
             Columns = columns;
             Rows = rows;
@@ -29,8 +29,6 @@ namespace VikingChessBL
             FieldHeight = (float)BoardHeight / Columns;
             State = gameState.attackerTurn;
             Turn = 0;
-            DoesAttackersHaveKing = doesAttackersHaveKing;
-            DoesDefendersHaveKing = doesDefendersHaveKing;
 
             AddPiecesToBoard();
             AddRefugesToBoard();
@@ -52,69 +50,79 @@ namespace VikingChessBL
         public int Turn { get; set; }
         public bool DoesAttackersHaveKing { get; set; }
         public bool DoesDefendersHaveKing { get; set; }
+        public bool DoesAttackerKingWantsToFlee { get; set; }
+        public bool DoesDefenderKingWantsToFlee { get; set; }
+
+        public void SetRules(bool doesAttackersHaveKing, bool doesDefendersHaveKing, bool doesAttackerKingWantsToFlee, bool doesDefenderKingWantsToFlee)
+        {
+            DoesAttackersHaveKing = doesAttackersHaveKing;
+            DoesDefendersHaveKing = doesDefendersHaveKing;
+            DoesAttackerKingWantsToFlee = doesAttackerKingWantsToFlee;
+            DoesDefenderKingWantsToFlee = doesDefenderKingWantsToFlee;
+        }
 
         private void AddPiecesToBoard()
         {
             var startPosition = new Vector2(0f);
 
             //Add to board - Attackers
-            Board[0, 3] = new Piece(Piece.teams.attackers, Piece.types.normal, startPosition);
-            Board[0, 4] = new Piece(Piece.teams.attackers, Piece.types.normal, startPosition);
-            Board[0, 5] = new Piece(Piece.teams.attackers, Piece.types.normal, startPosition);
-            Board[0, 6] = new Piece(Piece.teams.attackers, Piece.types.normal, startPosition);
-            Board[0, 7] = new Piece(Piece.teams.attackers, Piece.types.normal, startPosition);
-            Board[1, 5] = new Piece(Piece.teams.attackers, Piece.types.normal, startPosition);
-            Board[3, 0] = new Piece(Piece.teams.attackers, Piece.types.normal, startPosition);
-            Board[4, 0] = new Piece(Piece.teams.attackers, Piece.types.normal, startPosition);
-            Board[5, 0] = new Piece(Piece.teams.attackers, Piece.types.normal, startPosition);
-            Board[5, 1] = new Piece(Piece.teams.attackers, Piece.types.normal, startPosition);
-            Board[6, 0] = new Piece(Piece.teams.attackers, Piece.types.normal, startPosition);
-            Board[7, 0] = new Piece(Piece.teams.attackers, Piece.types.normal, startPosition);
-            Board[3, 10] = new Piece(Piece.teams.attackers, Piece.types.normal, startPosition);
-            Board[4, 10] = new Piece(Piece.teams.attackers, Piece.types.normal, startPosition);
-            Board[5, 10] = new Piece(Piece.teams.attackers, Piece.types.normal, startPosition);
-            Board[5, 9] = new Piece(Piece.teams.attackers, Piece.types.normal, startPosition);
-            Board[6, 10] = new Piece(Piece.teams.attackers, Piece.types.normal, startPosition);
-            Board[7, 10] = new Piece(Piece.teams.attackers, Piece.types.normal, startPosition);
-            Board[9, 5] = new Piece(Piece.teams.attackers, Piece.types.normal, startPosition);
-            Board[10, 3] = new Piece(Piece.teams.attackers, Piece.types.normal, startPosition);
-            Board[10, 4] = new Piece(Piece.teams.attackers, Piece.types.normal, startPosition);
-            Board[10, 5] = new Piece(Piece.teams.attackers, Piece.types.normal, startPosition);
-            Board[10, 6] = new Piece(Piece.teams.attackers, Piece.types.normal, startPosition);
-            Board[10, 7] = new Piece(Piece.teams.attackers, Piece.types.normal, startPosition);
+            Board[0, 3] = new Piece(Piece.teams.attackers, Piece.types.normalPiece, startPosition);
+            Board[0, 4] = new Piece(Piece.teams.attackers, Piece.types.normalPiece, startPosition);
+            Board[0, 5] = new Piece(Piece.teams.attackers, Piece.types.normalPiece, startPosition);
+            Board[0, 6] = new Piece(Piece.teams.attackers, Piece.types.normalPiece, startPosition);
+            Board[0, 7] = new Piece(Piece.teams.attackers, Piece.types.normalPiece, startPosition);
+            Board[1, 5] = new Piece(Piece.teams.attackers, Piece.types.normalPiece, startPosition);
+            Board[3, 0] = new Piece(Piece.teams.attackers, Piece.types.normalPiece, startPosition);
+            Board[4, 0] = new Piece(Piece.teams.attackers, Piece.types.normalPiece, startPosition);
+            Board[5, 0] = new Piece(Piece.teams.attackers, Piece.types.normalPiece, startPosition);
+            Board[5, 1] = new Piece(Piece.teams.attackers, Piece.types.normalPiece, startPosition);
+            Board[6, 0] = new Piece(Piece.teams.attackers, Piece.types.normalPiece, startPosition);
+            Board[7, 0] = new Piece(Piece.teams.attackers, Piece.types.normalPiece, startPosition);
+            Board[3, 10] = new Piece(Piece.teams.attackers, Piece.types.normalPiece, startPosition);
+            Board[4, 10] = new Piece(Piece.teams.attackers, Piece.types.normalPiece, startPosition);
+            Board[5, 10] = new Piece(Piece.teams.attackers, Piece.types.normalPiece, startPosition);
+            Board[5, 9] = new Piece(Piece.teams.attackers, Piece.types.normalPiece, startPosition);
+            Board[6, 10] = new Piece(Piece.teams.attackers, Piece.types.normalPiece, startPosition);
+            Board[7, 10] = new Piece(Piece.teams.attackers, Piece.types.normalPiece, startPosition);
+            Board[9, 5] = new Piece(Piece.teams.attackers, Piece.types.normalPiece, startPosition);
+            Board[10, 3] = new Piece(Piece.teams.attackers, Piece.types.normalPiece, startPosition);
+            Board[10, 4] = new Piece(Piece.teams.attackers, Piece.types.normalPiece, startPosition);
+            Board[10, 5] = new Piece(Piece.teams.attackers, Piece.types.normalPiece, startPosition);
+            Board[10, 6] = new Piece(Piece.teams.attackers, Piece.types.normalPiece, startPosition);
+            Board[10, 7] = new Piece(Piece.teams.attackers, Piece.types.normalPiece, startPosition);
 
             //Add to board - Defenders
-            Board[3, 5] = new Piece(Piece.teams.defenders, Piece.types.normal, startPosition);
-            Board[4, 4] = new Piece(Piece.teams.defenders, Piece.types.normal, startPosition);
-            Board[4, 5] = new Piece(Piece.teams.defenders, Piece.types.normal, startPosition);
-            Board[4, 6] = new Piece(Piece.teams.defenders, Piece.types.normal, startPosition);
-            Board[5, 3] = new Piece(Piece.teams.defenders, Piece.types.normal, startPosition);
-            Board[5, 4] = new Piece(Piece.teams.defenders, Piece.types.normal, startPosition);
-            Board[5, 5] = new Piece(Piece.teams.defenders, Piece.types.king, startPosition); //King
-            Board[5, 6] = new Piece(Piece.teams.defenders, Piece.types.normal, startPosition);
-            Board[5, 7] = new Piece(Piece.teams.defenders, Piece.types.normal, startPosition);
-            Board[6, 4] = new Piece(Piece.teams.defenders, Piece.types.normal, startPosition);
-            Board[6, 5] = new Piece(Piece.teams.defenders, Piece.types.normal, startPosition);
-            Board[6, 6] = new Piece(Piece.teams.defenders, Piece.types.normal, startPosition);
-            Board[7, 5] = new Piece(Piece.teams.defenders, Piece.types.normal, startPosition);
+            Board[3, 5] = new Piece(Piece.teams.defenders, Piece.types.normalPiece, startPosition);
+            Board[4, 4] = new Piece(Piece.teams.defenders, Piece.types.normalPiece, startPosition);
+            Board[4, 5] = new Piece(Piece.teams.defenders, Piece.types.normalPiece, startPosition);
+            Board[4, 6] = new Piece(Piece.teams.defenders, Piece.types.normalPiece, startPosition);
+            Board[5, 3] = new Piece(Piece.teams.defenders, Piece.types.normalPiece, startPosition);
+            Board[5, 4] = new Piece(Piece.teams.defenders, Piece.types.normalPiece, startPosition);
+            Board[5, 5] = new Piece(Piece.teams.defenders, Piece.types.kingPiece, startPosition); //King
+            Board[5, 6] = new Piece(Piece.teams.defenders, Piece.types.normalPiece, startPosition);
+            Board[5, 7] = new Piece(Piece.teams.defenders, Piece.types.normalPiece, startPosition);
+            Board[6, 4] = new Piece(Piece.teams.defenders, Piece.types.normalPiece, startPosition);
+            Board[6, 5] = new Piece(Piece.teams.defenders, Piece.types.normalPiece, startPosition);
+            Board[6, 6] = new Piece(Piece.teams.defenders, Piece.types.normalPiece, startPosition);
+            Board[7, 5] = new Piece(Piece.teams.defenders, Piece.types.normalPiece, startPosition);
 
             //Add to board - Refuges
-            Board[0, 0] = new Piece(Piece.teams.refuge, Piece.types.normal, startPosition);
-            Board[0, 10] = new Piece(Piece.teams.refuge, Piece.types.normal, startPosition);
-            Board[10, 0] = new Piece(Piece.teams.refuge, Piece.types.normal, startPosition);
-            Board[10, 10] = new Piece(Piece.teams.refuge, Piece.types.normal, startPosition);
+            Board[0, 0] = new Piece(Piece.teams.refuge, Piece.types.normalPiece, startPosition);
+            Board[0, 10] = new Piece(Piece.teams.refuge, Piece.types.normalPiece, startPosition);
+            Board[10, 0] = new Piece(Piece.teams.refuge, Piece.types.normalPiece, startPosition);
+            Board[10, 10] = new Piece(Piece.teams.refuge, Piece.types.normalPiece, startPosition);
             //Board[5, 5] aka the middle refuge haft to be added when the king moves away
         }
 
-        private void AddRefugesToBoard()
+        public void AddRefugesToBoard()
         {
             var startPosition = new Vector2(0f);
 
-            Board[0, 0] = new Piece(Piece.teams.refuge, Piece.types.normal, startPosition);
-            Board[0, 10] = new Piece(Piece.teams.refuge, Piece.types.normal, startPosition);
-            //TODO add when king is gone
-            Board[10, 0] = new Piece(Piece.teams.refuge, Piece.types.normal, startPosition);
-            Board[10, 10] = new Piece(Piece.teams.refuge, Piece.types.normal, startPosition);
+            Board[0, 0] = new Piece(Piece.teams.refuge, Piece.types.cornerRefuge, startPosition);
+            Board[0, 10] = new Piece(Piece.teams.refuge, Piece.types.cornerRefuge, startPosition);
+            if (Board[5, 5] == null){ Board[5, 5] = new Piece(Piece.teams.refuge, Piece.types.centerRefuge, startPosition);}
+            Board[10, 0] = new Piece(Piece.teams.refuge, Piece.types.cornerRefuge, startPosition);
+            Board[10, 10] = new Piece(Piece.teams.refuge, Piece.types.cornerRefuge, startPosition);
         }
 
         private void CalculateBoardPositions()

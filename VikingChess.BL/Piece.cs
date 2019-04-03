@@ -12,7 +12,7 @@ namespace VikingChessBL
     {
         //Init
         public enum teams { attackers, defenders, refuge};
-        public enum types { normal, king};
+        public enum types { normalPiece, kingPiece, cornerRefuge, centerRefuge};
         CollisionHandler collisionController = new CollisionHandler();
         
         //Constructor

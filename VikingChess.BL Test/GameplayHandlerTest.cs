@@ -8,6 +8,7 @@ namespace VikingChess.BL_Test
     [TestClass]
     public class GameplayHandlerTest
     {
+        GameSetup gameSetup = new GameSetup();
         CollisionHandler collisionHandler = new CollisionHandler();
         LegalMove legalMove = new LegalMove();
         PlayBoard board = new PlayBoard(11, 11, new Vector2(0), doesAttackersHaveKing: false, doesDefendersHaveKing: true);
@@ -23,31 +24,78 @@ namespace VikingChess.BL_Test
         public PlayBoard Board { get; set; }
 
         [TestMethod]
-        public void KillCheckNormalPieceTest()
+        public void KillCheckNormalPieceTest_KillPiece()
         {
-            //TODO: Get this to work
-
             //Arrange
             var position = new Vector2(0);
-            Board.Board[2, 2] = new Piece(Piece.teams.attackers, Piece.types.normal, position);
+            Board.Board[2, 2] = new Piece(Piece.teams.attackers, Piece.types.normalPiece, position);
             Board.Board[2, 2].MovedInTurn = 5;
-            Board.Board[2, 3] = new Piece(Piece.teams.defenders, Piece.types.normal, position);
-            Board.Board[2, 2].MovedInTurn = 4;
-            Board.Board[2, 4] = new Piece(Piece.teams.attackers, Piece.types.normal, position);
-            Board.Board[2, 2].MovedInTurn = 3;
+            Board.Board[2, 3] = new Piece(Piece.teams.defenders, Piece.types.normalPiece, position);
+            Board.Board[2, 3].MovedInTurn = 4;
+            Board.Board[2, 4] = new Piece(Piece.teams.attackers, Piece.types.normalPiece, position);
+            Board.Board[2, 4].MovedInTurn = 3;
 
             //Act
             gameplayHandler.KillCheckNormalPiece(2, 3, Piece.teams.attackers);
 
             //Assert
-            Assert.AreEqual(null, Board.Board[2, 3]);
-
+            Assert.AreEqual(null, gameplayHandler.Board.Board[2, 3]);
         }
 
         [TestMethod]
-        public void KillCheckKingPieceTest()
+        public void KillCheckNormalPieceTest_DontKillPiece()
         {
-            //TODO: Unit test
+            //Arrange
+            var position = new Vector2(0);
+            Board.Board[2, 2] = null;
+            Board.Board[2, 3] = new Piece(Piece.teams.defenders, Piece.types.normalPiece, position);
+            Board.Board[2, 3].MovedInTurn = 4;
+            Board.Board[2, 4] = new Piece(Piece.teams.attackers, Piece.types.normalPiece, position);
+            Board.Board[2, 4].MovedInTurn = 3;
+
+            //Act
+            var expected = Board.Board[2, 3];
+            gameplayHandler.KillCheckNormalPiece(2, 3, Piece.teams.attackers);
+
+            //Assert
+            Assert.AreEqual(expected, gameplayHandler.Board.Board[2, 3]);
+        }
+
+        [TestMethod]
+        public void KillCheckKingPieceTest_KillKing()
+        {
+            //Arrange
+            var position = new Vector2(0);
+            Board.Board[2, 3] = new Piece(Piece.teams.attackers, Piece.types.normalPiece, position);
+            Board.Board[3, 2] = new Piece(Piece.teams.attackers, Piece.types.normalPiece, position);
+            Board.Board[3, 3] = new Piece(Piece.teams.defenders, Piece.types.kingPiece, position); //King
+            Board.Board[3, 4] = new Piece(Piece.teams.attackers, Piece.types.normalPiece, position);
+            Board.Board[4, 3] = new Piece(Piece.teams.attackers, Piece.types.normalPiece, position);
+
+            //Act
+            gameplayHandler.KillCheckKingPiece(3, 3, Piece.teams.attackers);
+
+            //Assert
+            Assert.AreEqual(null, gameplayHandler.Board.Board[3, 3]);
+        }
+
+        [TestMethod]
+        public void KillCheckKingPieceTest_DontKillKing()
+        {
+            //Arrange
+            var position = new Vector2(0);
+            Board.Board[2, 3] = null;
+            Board.Board[3, 2] = new Piece(Piece.teams.attackers, Piece.types.normalPiece, position);
+            Board.Board[3, 3] = new Piece(Piece.teams.defenders, Piece.types.kingPiece, position); //King
+            Board.Board[3, 4] = new Piece(Piece.teams.attackers, Piece.types.normalPiece, position);
+            Board.Board[4, 3] = new Piece(Piece.teams.attackers, Piece.types.normalPiece, position);
+
+            //Act
+            var expected = Board.Board[3, 3];
+            gameplayHandler.KillCheckKingPiece(3, 3, Piece.teams.attackers);
+
+            //Assert
+            Assert.AreEqual(expected, gameplayHandler.Board.Board[3, 3]);
         }
 
         [TestMethod]
@@ -55,9 +103,9 @@ namespace VikingChess.BL_Test
         {
             //Arrange
             var position = new Vector2(0);
-            var piece1 = new Piece(Piece.teams.attackers, Piece.types.normal, position);
+            var piece1 = new Piece(Piece.teams.attackers, Piece.types.normalPiece, position);
             piece1.MovedInTurn = 5;
-            var piece2 = new Piece(Piece.teams.attackers, Piece.types.normal, position);
+            var piece2 = new Piece(Piece.teams.attackers, Piece.types.normalPiece, position);
             piece2.MovedInTurn = 4;
 
             //Act
@@ -73,7 +121,7 @@ namespace VikingChess.BL_Test
         {
             //Arrange
             var position = new Vector2(0);
-            Piece piece1 = new Piece(Piece.teams.attackers, Piece.types.normal, position);
+            Piece piece1 = new Piece(Piece.teams.attackers, Piece.types.normalPiece, position);
             piece1.MovedInTurn = 5;
             Piece piece2 = null;
 
@@ -90,9 +138,9 @@ namespace VikingChess.BL_Test
         {
             //Arrange
             var position = new Vector2(0);
-            var piece1 = new Piece(Piece.teams.attackers, Piece.types.normal, position);
+            var piece1 = new Piece(Piece.teams.attackers, Piece.types.normalPiece, position);
             piece1.MovedInTurn = 3;
-            var piece2 = new Piece(Piece.teams.attackers, Piece.types.normal, position);
+            var piece2 = new Piece(Piece.teams.attackers, Piece.types.normalPiece, position);
             piece2.MovedInTurn = 4;
 
             //Act
@@ -108,9 +156,9 @@ namespace VikingChess.BL_Test
         {
             //Arrange
             var position = new Vector2(0);
-            var piece1 = new Piece(Piece.teams.attackers, Piece.types.normal, position);
+            var piece1 = new Piece(Piece.teams.attackers, Piece.types.normalPiece, position);
             piece1.MovedInTurn = 5;
-            var piece2 = new Piece(Piece.teams.attackers, Piece.types.normal, position);
+            var piece2 = new Piece(Piece.teams.attackers, Piece.types.normalPiece, position);
             piece2.MovedInTurn = 4;
 
             //Act
@@ -126,9 +174,9 @@ namespace VikingChess.BL_Test
         {
             //Arrange
             var position = new Vector2(0);
-            var piece1 = new Piece(Piece.teams.attackers, Piece.types.normal, position);
+            var piece1 = new Piece(Piece.teams.attackers, Piece.types.normalPiece, position);
             piece1.MovedInTurn = 5;
-            var piece2 = new Piece(Piece.teams.refuge, Piece.types.normal, position);
+            var piece2 = new Piece(Piece.teams.refuge, Piece.types.normalPiece, position);
 
             //Act
             var actual = gameplayHandler.IsThereAPieceOnEachSide(piece1, piece2, Piece.teams.attackers);
@@ -143,9 +191,9 @@ namespace VikingChess.BL_Test
         {
             //Arrange
             var position = new Vector2(0);
-            var piece1 = new Piece(Piece.teams.attackers, Piece.types.normal, position);
+            var piece1 = new Piece(Piece.teams.attackers, Piece.types.normalPiece, position);
             piece1.MovedInTurn = 8;
-            var piece2 = new Piece(Piece.teams.attackers, Piece.types.normal, position);
+            var piece2 = new Piece(Piece.teams.attackers, Piece.types.normalPiece, position);
             piece2.MovedInTurn = 1;
 
             //Act
@@ -161,9 +209,9 @@ namespace VikingChess.BL_Test
         {
             //Arrange
             var position = new Vector2(0);
-            var piece1 = new Piece(Piece.teams.attackers, Piece.types.normal, position);
+            var piece1 = new Piece(Piece.teams.attackers, Piece.types.normalPiece, position);
             piece1.MovedInTurn = 8;
-            var piece2 = new Piece(Piece.teams.attackers, Piece.types.normal, position);
+            var piece2 = new Piece(Piece.teams.attackers, Piece.types.normalPiece, position);
             piece2.MovedInTurn = 1;
 
             //Act
@@ -181,7 +229,7 @@ namespace VikingChess.BL_Test
             Board.State = PlayBoard.gameState.attackerTurn;
 
             //Act
-            gameplayHandler.WinConditionCheck();
+            gameplayHandler.WinConditionsCheck();
 
             //Assert
             Assert.AreEqual(PlayBoard.gameState.attackerTurn, Board.State);
@@ -196,7 +244,7 @@ namespace VikingChess.BL_Test
             Board.Board[5, 5] = null;
 
             //Act
-            gameplayHandler.WinConditionCheck();
+            gameplayHandler.WinConditionsCheck();
 
             //Assert
             Assert.AreEqual(PlayBoard.gameState.attackerWin, Board.State);
@@ -210,7 +258,7 @@ namespace VikingChess.BL_Test
             Board.DoesAttackersHaveKing = true;
 
             //Act
-            gameplayHandler.WinConditionCheck();
+            gameplayHandler.WinConditionsCheck();
 
             //Assert
             Assert.AreEqual(PlayBoard.gameState.defenderWin, Board.State);

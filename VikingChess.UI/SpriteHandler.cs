@@ -74,7 +74,7 @@ namespace VikingChessUI
                         }
 
                         //Normal pieces
-                        if (board.Board[column, row].Type == Piece.types.normal)
+                        if (board.Board[column, row].Type == Piece.types.normalPiece)
                         {
                             if (board.Board[column, row].Team == Piece.teams.attackers)
                             {
@@ -88,7 +88,7 @@ namespace VikingChessUI
                         }
 
                         //King pieces
-                        if (board.Board[column, row].Type == Piece.types.king)
+                        if (board.Board[column, row].Type == Piece.types.kingPiece)
                         {
                             if (board.Board[column, row].Team == Piece.teams.defenders)
                             {

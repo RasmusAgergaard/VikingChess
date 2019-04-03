@@ -45,12 +45,16 @@ namespace VikingChessBL
 
         private void RemoveRefuges(PlayBoard board)
         {
-            //TODO: Remove the actual refuges, and not magical numbers
-            board.LegalMoves[0, 0] = null;
-            board.LegalMoves[0, 10] = null;
-            board.LegalMoves[10, 0] = null;
-            board.LegalMoves[10, 10] = null;
-            board.LegalMoves[5, 5] = null;
+            for (int column = 0; column < board.Columns; column++)
+            {
+                for (int row = 0; row < board.Rows; row++)
+                {
+                    if (board.Board[column, row] != null && board.Board[column, row].Team == Piece.teams.refuge)
+                    {
+                        board.LegalMoves[column, row] = null;
+                    }
+                }
+            }
         }
 
         private void RemovePieces(PlayBoard board, int selectedPieceColumn, int selectedPieceRow)
@@ -62,7 +66,7 @@ namespace VikingChessBL
                 for (int column = 0; column < board.Columns; column++)
                 {
                     //A piece is found
-                    if (board.Board[column, row] != null)
+                    if (board.Board[column, row] != null && board.Board[column, row].Team != Piece.teams.refuge)
                     {
                         //Above
                         if (column < selectedPieceColumn)

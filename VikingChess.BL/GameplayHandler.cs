@@ -48,7 +48,8 @@ namespace VikingChessBL
                 }
             }
 
-            WinConditionCheck();
+            Board.AddRefugesToBoard();
+            WinConditionsCheck();
 
             return Board;
         }
@@ -168,7 +169,7 @@ namespace VikingChessBL
 
         public void KillCheckNormalPiece(int column, int row, Piece.teams myTeam)
         {
-            if (Board.Board[column, row].Type == Piece.types.normal)
+            if (Board.Board[column, row].Type == Piece.types.normalPiece)
             {
                 //Column check
                 if (column > 0 && column < Board.Columns - 1)
@@ -192,7 +193,7 @@ namespace VikingChessBL
 
         public void KillCheckKingPiece(int column, int row, Piece.teams myTeam)
         {
-            if (Board.Board[column, row].Type == Piece.types.king)
+            if (Board.Board[column, row].Type == Piece.types.kingPiece)
             {
                 var killKingColumn = false;
                 var killKingRow = false;
@@ -275,42 +276,59 @@ namespace VikingChessBL
             Board.Board[column, row] = null;
         }
 
-        public void WinConditionCheck()
+        public void WinConditionsCheck()
         {
             if (Board.State == PlayBoard.gameState.attackerTurn || Board.State == PlayBoard.gameState.defenderTurn)
             {
-                var doesAttackerKingExist = false;
-                var doesDefenderKingExist = false;
+                KingHasBeenKilled();
+                KingHasEscaped();
+            }
+        }
 
-                for (int column = 0; column < Board.Columns; column++)
+        private void KingHasBeenKilled()
+        {
+            var doesAttackerKingExist = false;
+            var doesDefenderKingExist = false;
+
+            for (int column = 0; column < Board.Columns; column++)
+            {
+                for (int row = 0; row < Board.Rows; row++)
                 {
-                    for (int row = 0; row < Board.Rows; row++)
+                    if (Board.Board[column, row] != null && Board.Board[column, row].Type == Piece.types.kingPiece)
                     {
-                        if (Board.Board[column, row] != null && Board.Board[column, row].Type == Piece.types.king)
+                        if (Board.Board[column, row].Team == Piece.teams.attackers)
                         {
-                            if (Board.Board[column, row].Team == Piece.teams.attackers)
-                            {
-                                doesAttackerKingExist = true;
-                            }
+                            doesAttackerKingExist = true;
+                        }
 
-                            if (Board.Board[column, row].Team == Piece.teams.defenders)
-                            {
-                                doesDefenderKingExist = true;
-                            }
+                        if (Board.Board[column, row].Team == Piece.teams.defenders)
+                        {
+                            doesDefenderKingExist = true;
                         }
                     }
                 }
-
-                if (Board.DoesAttackersHaveKing && !doesAttackerKingExist)
-                {
-                    Board.State = PlayBoard.gameState.defenderWin;
-                }
-
-                if (Board.DoesDefendersHaveKing && !doesDefenderKingExist)
-                {
-                    Board.State = PlayBoard.gameState.attackerWin;
-                }
             }
+
+            if (Board.DoesAttackersHaveKing && !doesAttackerKingExist)
+            {
+                Board.State = PlayBoard.gameState.defenderWin;
+            }
+
+            if (Board.DoesDefendersHaveKing && !doesDefenderKingExist)
+            {
+                Board.State = PlayBoard.gameState.attackerWin;
+            }
+        }
+
+        private void KingHasEscaped()
+        {
+            //TODO: Create KingHasEscaped
+
+            //Find square next to refuges
+
+
+            //Check if king is on one of them
+
         }
     }
 }

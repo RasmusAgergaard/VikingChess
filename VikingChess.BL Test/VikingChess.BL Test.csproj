@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="GameplayHandlerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="LegalMoveTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
