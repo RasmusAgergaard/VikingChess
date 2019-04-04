@@ -12,7 +12,10 @@ namespace VikingChessBL
 {
     public class PlayBoard
     {
-        public enum gameState { gameStart, attackerTurn, attackerMoveing, attackerFighting, defenderTurn, defenderMoveing, defenderFighting, attackerWin, defenderWin };
+        public enum gameState { gameStart,
+                                attackerTurn, attackerMoveing, attackerFighting, attackerWinCheck,
+                                defenderTurn, defenderMoveing, defenderFighting, defenderWinCheck,
+                                attackerWin, defenderWin, draw};
 
         public PlayBoard(int columns, int rows, Vector2 position)
         {
@@ -29,6 +32,7 @@ namespace VikingChessBL
             FieldHeight = (float)BoardHeight / Columns;
             State = gameState.attackerTurn;
             Turn = 0;
+            TurnLog = "";
 
             AddPiecesToBoard();
             AddRefugesToBoard();
@@ -48,6 +52,7 @@ namespace VikingChessBL
         public float FieldHeight { get; set; }
         public gameState State { get; set; }
         public int Turn { get; set; }
+        public string TurnLog { get; set; }
         public bool DoesAttackersHaveKing { get; set; }
         public bool DoesDefendersHaveKing { get; set; }
         public bool DoesAttackerKingWantsToFlee { get; set; }
@@ -154,39 +159,58 @@ namespace VikingChessBL
             switch (State)
             {
                 case gameState.gameStart:
+                    TurnLog += State.ToString() + "\n";
                     State = gameState.attackerTurn;
                     break;
 
                 case gameState.attackerTurn:
+                    TurnLog += State.ToString() + "\n";
                     State = gameState.attackerMoveing;
                     Turn += 1;
                     break;
 
                 case gameState.attackerMoveing:
+                    TurnLog += State.ToString() + "\n";
                     State = gameState.attackerFighting;
                     break;
 
                 case gameState.attackerFighting:
+                    TurnLog += State.ToString() + "\n";
+                    State = gameState.attackerWinCheck;
+                    break;
+
+                case gameState.attackerWinCheck:
+                    TurnLog += State.ToString() + "\n";
                     State = gameState.defenderTurn;
                     break;
 
                 case gameState.defenderTurn:
+                    TurnLog += State.ToString() + "\n";
                     State = gameState.defenderMoveing;
                     Turn += 1;
                     break;
 
                 case gameState.defenderMoveing:
+                    TurnLog += State.ToString() + "\n";
                     State = gameState.defenderFighting;
                     break;
 
                 case gameState.defenderFighting:
+                    TurnLog += State.ToString() + "\n";
+                    State = gameState.defenderWinCheck;
+                    break;
+
+                case gameState.defenderWinCheck:
+                    TurnLog += State.ToString() + "\n";
                     State = gameState.attackerTurn;
                     break;
 
                 case gameState.attackerWin:
+                    TurnLog += State.ToString() + "\n";
                     break;
 
                 case gameState.defenderWin:
+                    TurnLog += State.ToString() + "\n";
                     break;
             }
         }

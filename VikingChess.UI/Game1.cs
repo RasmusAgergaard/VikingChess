@@ -33,6 +33,7 @@ namespace VikingChessUI
 
         //Fonts
         SpriteFont normalFont;
+        SpriteFont smallFont;
 
         //Constructor
         public Game1()
@@ -75,6 +76,7 @@ namespace VikingChessUI
 
             //Fonts
             normalFont = Content.Load<SpriteFont>(@"Fonts\normalFont");
+            smallFont = Content.Load<SpriteFont>(@"Fonts\smallFont");
         }
 
         protected override void UnloadContent()
@@ -108,6 +110,11 @@ namespace VikingChessUI
                     board.ChangeTurn();
                     break;
 
+                case PlayBoard.gameState.attackerWinCheck:
+                    board = gameplayHandler.Update(gameSetup);
+                    board.ChangeTurn();
+                    break;
+
                 case PlayBoard.gameState.defenderTurn:
                     board = gameplayHandler.Update(gameSetup);
                     break;
@@ -117,6 +124,11 @@ namespace VikingChessUI
                     break;
 
                 case PlayBoard.gameState.defenderFighting:
+                    board = gameplayHandler.Update(gameSetup);
+                    board.ChangeTurn();
+                    break;
+
+                case PlayBoard.gameState.defenderWinCheck:
                     board = gameplayHandler.Update(gameSetup);
                     board.ChangeTurn();
                     break;
@@ -151,7 +163,7 @@ namespace VikingChessUI
             //Draw text
             spriteBatch.DrawString(normalFont, "Game state: " + board.State.ToString(), new Vector2(380, 20), Color.Black);
             spriteBatch.DrawString(normalFont, "Turn: " + board.Turn.ToString(), new Vector2(380, 40), Color.Black);
-            spriteBatch.DrawString(normalFont, "Fields: ", new Vector2(380, 60), Color.Black);
+            spriteBatch.DrawString(smallFont, "Turn log: " + board.TurnLog, new Vector2(380, 60), Color.Black);
 
             //Base draw
             base.Draw(gameTime);

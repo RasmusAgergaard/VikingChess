@@ -34,3 +34,4 @@ C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\VikingChess.UI\obj\x8
 C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\VikingChess.UI\obj\x86\Debug\VikingChess.UI.csproj.CopyComplete
 C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\VikingChess.UI\obj\x86\Debug\VikingChess.exe
 C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\VikingChess.UI\obj\x86\Debug\VikingChess.pdb
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\VikingChess.UI\bin\Windows\x86\Debug\Content\Fonts\smallFont.xnb

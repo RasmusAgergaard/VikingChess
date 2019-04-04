@@ -48,8 +48,12 @@ namespace VikingChessBL
                 }
             }
 
+            if (Board.State == PlayBoard.gameState.attackerWinCheck || Board.State == PlayBoard.gameState.defenderWinCheck)
+            {
+                WinConditionsCheck();
+            }
+
             Board.AddRefugesToBoard();
-            WinConditionsCheck();
 
             return Board;
         }
@@ -273,16 +277,14 @@ namespace VikingChessBL
 
         private void KillPiece(int column, int row)
         {
+            Board.TurnLog += $"Piece killed - {column},{row}\n";
             Board.Board[column, row] = null;
         }
 
         public void WinConditionsCheck()
         {
-            if (Board.State == PlayBoard.gameState.attackerTurn || Board.State == PlayBoard.gameState.defenderTurn)
-            {
-                KingHasBeenKilled();
-                KingHasEscaped();
-            }
+            KingHasBeenKilled();
+            KingHasEscaped();
         }
 
         private void KingHasBeenKilled()
@@ -320,7 +322,7 @@ namespace VikingChessBL
             }
         }
 
-        private void KingHasEscaped() //TODO: Test and make sure it works..
+        private void KingHasEscaped()
         {
             var hasAttackerKingFled = false;
             var hasDefenderKingFled = false;
@@ -334,9 +336,9 @@ namespace VikingChessBL
                         var positions = new List<Piece>();
 
                         if (column + 1 < Board.Columns) {positions.Add(Board.Board[column + 1, row]);}
-                        if (column - 1 > 0)             {positions.Add(Board.Board[column - 1, row]);}
+                        if (column - 1 >= 0)             {positions.Add(Board.Board[column - 1, row]);}
                         if (row + 1 < Board.Rows)       {positions.Add(Board.Board[column, row + 1]);}
-                        if (row - 1 > 0)                {positions.Add(Board.Board[column, row - 1]);}
+                        if (row - 1 >= 0)                {positions.Add(Board.Board[column, row - 1]);}
 
                         foreach (var position in positions)
                         {
