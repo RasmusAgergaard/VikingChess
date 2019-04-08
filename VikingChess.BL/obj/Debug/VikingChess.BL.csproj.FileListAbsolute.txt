@@ -14,8 +14,8 @@ C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\VikingChess.BL\bin\De
 C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\VikingChess.BL\bin\Debug\SharpDX.MediaFoundation.xml
 C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\VikingChess.BL\bin\Debug\SharpDX.Direct2D1.xml
 C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\VikingChess.BL\bin\Debug\SharpDX.XAudio2.xml
+C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\VikingChess.BL\obj\Debug\VikingChess.BL.csprojAssemblyReference.cache
 C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\VikingChess.BL\obj\Debug\VikingChess.BL.csproj.CoreCompileInputs.cache
 C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\VikingChess.BL\obj\Debug\VikingChess.BL.csproj.CopyComplete
 C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\VikingChess.BL\obj\Debug\ClassLibrary.dll
 C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\VikingChess.BL\obj\Debug\ClassLibrary.pdb
-C:\Users\Rasmus\Desktop\Main drive\Programming\VikingChess\VikingChess.BL\obj\Debug\VikingChess.BL.csprojAssemblyReference.cache
