@@ -13,8 +13,6 @@ namespace VikingChess.UI2
         CollisionHandler collisionHandler;
         GameplayHandler gameplayHandler;
 
-        int resolutionDevider = 1;
-
         //Graphics
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
@@ -31,8 +29,8 @@ namespace VikingChess.UI2
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
-            graphics.PreferredBackBufferWidth = 1920 / resolutionDevider;
-            graphics.PreferredBackBufferHeight = 1080 / resolutionDevider;
+            graphics.PreferredBackBufferWidth = 960;
+            graphics.PreferredBackBufferHeight = 540;
             graphics.ApplyChanges();
             Content.RootDirectory = "Content";
         }
@@ -77,7 +75,53 @@ namespace VikingChess.UI2
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            switch (board.State)
+            {
+                case PlayBoard.gameState.gameStart:
+                    break;
+
+                case PlayBoard.gameState.attackerTurn:
+                    board = gameplayHandler.Update(gameSetup);
+                    break;
+
+                case PlayBoard.gameState.attackerMoveing:
+                    board.ChangeTurn();
+                    break;
+
+                case PlayBoard.gameState.attackerFighting:
+                    board = gameplayHandler.Update(gameSetup);
+                    board.ChangeTurn();
+                    break;
+
+                case PlayBoard.gameState.attackerWinCheck:
+                    board = gameplayHandler.Update(gameSetup);
+                    board.ChangeTurn();
+                    break;
+
+                case PlayBoard.gameState.defenderTurn:
+                    board = gameplayHandler.Update(gameSetup);
+                    break;
+
+                case PlayBoard.gameState.defenderMoveing:
+                    board.ChangeTurn();
+                    break;
+
+                case PlayBoard.gameState.defenderFighting:
+                    board = gameplayHandler.Update(gameSetup);
+                    board.ChangeTurn();
+                    break;
+
+                case PlayBoard.gameState.defenderWinCheck:
+                    board = gameplayHandler.Update(gameSetup);
+                    board.ChangeTurn();
+                    break;
+
+                case PlayBoard.gameState.attackerWin:
+                    break;
+
+                case PlayBoard.gameState.defenderWin:
+                    break;
+            }
 
             base.Update(gameTime);
         }
@@ -88,54 +132,40 @@ namespace VikingChess.UI2
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise);
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            var windowWidth = GraphicsDevice.Viewport.Width;
-            var windowHeight = GraphicsDevice.Viewport.Height;
-            var spriteSize = 128 / resolutionDevider;
-            var squareWidth = 128 / resolutionDevider;
-            var squareHeight = 64 / resolutionDevider;
-            var drawStartX = windowWidth / 2 - (spriteSize / 2);
-            var drawStartY = 150 / resolutionDevider;
+            DrawBoard();
 
-            var pieceWidth = 48 / resolutionDevider;
-            var pieceHeight = 88 / resolutionDevider;
-            var pieceOffsetX = 40 / resolutionDevider;
-            var pieceOffsetY = 12 / resolutionDevider;
+            base.Draw(gameTime);
 
-            //Tiles
+            spriteBatch.End();
+        }
+
+        private void DrawBoard()
+        {
+            var squareWidth = 64;
+            var squareHeight = 32;
+            var spriteSize = 64;
+            var drawStartX = 0; //windowWidth / 2 - (spriteSize / 2);
+            var drawStartY = 80;
+
+            DrawTiles(spriteSize, squareWidth, squareHeight, drawStartX, drawStartY);
+
+            DrawPieces(squareWidth, squareHeight, drawStartX, drawStartY);
+
+
+        }
+
+        private void DrawPieces(int squareWidth, int squareHeight, int drawStartX, int drawStartY)
+        {
+            var pieceWidth = 24;
+            var pieceHeight = 44;
+            var pieceOffsetX = 20;
+            var pieceOffsetY = 6;
+
             for (int x = 0; x < board.Columns; x++)
             {
                 for (int y = 0; y < board.Rows; y++)
                 {
-                    var drawX = ((x - y) * squareWidth / 2) + drawStartX;
-                    var drawY = ((x + y) * squareHeight / 2) + drawStartY;
-
-                    //Grass tile
-                    var drawTileRect = new Rectangle(drawX, drawY, spriteSize, spriteSize);
-                    spriteBatch.Draw(spriteTileGrass, drawTileRect, Color.White);
-
-                    //Refuges
-                    if (board.Board[x, y] != null && board.Board[x, y].Team == Piece.teams.refuge)
-                    {
-                        spriteBatch.Draw(spriteRefuge, drawTileRect, Color.White);
-                    }
-
-                    //Legal moves
-                    if (gameplayHandler.SelectedPiece != null)
-                    {
-                        if (board.LegalMoves[x,y] != null)
-                        {
-                            spriteBatch.Draw(spriteLegalMove, drawTileRect, Color.White);
-                        }
-                    }
-                }
-            }
-
-            //Pieces
-            for (int x = 0; x < board.Columns; x++)
-            {
-                for (int y = 0; y < board.Rows; y++)
-                {
-                    if (board.Board[x,y] != null)
+                    if (board.Board[x, y] != null)
                     {
                         var pieceOffset = (squareWidth / 2) + (pieceWidth / 2);
                         var screenX = ((x - y) * squareWidth / 2) + drawStartX + pieceOffsetX;
@@ -171,10 +201,37 @@ namespace VikingChess.UI2
                     }
                 }
             }
+        }
 
-            base.Draw(gameTime);
+        private void DrawTiles(int spriteSize, int squareWidth, int squareHeight, int drawStartX, int drawStartY)
+        {
+            for (int x = 0; x < board.Columns; x++)
+            {
+                for (int y = 0; y < board.Rows; y++)
+                {
+                    var drawX = ((x - y) * squareWidth / 2) + drawStartX;
+                    var drawY = ((x + y) * squareHeight / 2) + drawStartY;
 
-            spriteBatch.End();
+                    //Grass tile
+                    var drawTileRect = new Rectangle(drawX, drawY, spriteSize, spriteSize);
+                    spriteBatch.Draw(spriteTileGrass, drawTileRect, Color.White);
+
+                    //Refuges
+                    if (board.Board[x, y] != null && board.Board[x, y].Team == Piece.teams.refuge)
+                    {
+                        spriteBatch.Draw(spriteRefuge, drawTileRect, Color.White);
+                    }
+
+                    //Legal moves
+                    if (gameplayHandler.SelectedPiece != null)
+                    {
+                        if (board.LegalMoves[x, y] != null)
+                        {
+                            spriteBatch.Draw(spriteLegalMove, drawTileRect, Color.White);
+                        }
+                    }
+                }
+            }
         }
     }
 }
