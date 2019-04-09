@@ -85,6 +85,18 @@
 /processorParam:TextureFormat=Color
 /build:Refuges/tile_refuge.png
 
+#begin Test/refuge.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Test/refuge.png;Test/square.png
+
 #begin Tiles/tile_grass.png
 /importer:TextureImporter
 /processor:TextureProcessor

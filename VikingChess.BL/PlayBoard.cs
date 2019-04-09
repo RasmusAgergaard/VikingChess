@@ -28,8 +28,8 @@ namespace VikingChessBL
             SpriteName = "board_360x360";
             BoardWidth = 360;
             BoardHeight = 360;
-            FieldWidth = (float)BoardWidth / Rows;
-            FieldHeight = (float)BoardHeight / Columns;
+            FieldWidth = 64;
+            FieldHeight = 32;
             State = gameState.attackerTurn;
             Turn = 0;
             TurnLog = "";
@@ -139,11 +139,6 @@ namespace VikingChessBL
             var squareHeight = 32;
             var drawStartX = windowWidth / 2 - (spriteSize / 2);
             var drawStartY = 80;
-
-            var pieceWidth = 24;
-            var pieceHeight = 44;
-            var pieceOffsetX = 20;
-            var pieceOffsetY = 6;
 
             for (int x = 0; x < Columns; x++)
             {

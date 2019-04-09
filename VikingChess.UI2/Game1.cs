@@ -25,6 +25,7 @@ namespace VikingChess.UI2
         Texture2D spriteRefuge;
         Texture2D spriteSelectedPiece;
         Texture2D spriteLegalMove;
+        Texture2D spriteTestSquare;
 
         public Game1()
         {
@@ -63,6 +64,7 @@ namespace VikingChess.UI2
             spriteRefuge = Content.Load<Texture2D>(@"Refuges\tile_refuge");
             spriteSelectedPiece = Content.Load<Texture2D>(@"Layers\selected_piece");
             spriteLegalMove = Content.Load<Texture2D>(@"Layers\legal_move");
+            spriteTestSquare = Content.Load<Texture2D>(@"Test\square");
         }
 
         protected override void UnloadContent()
@@ -134,6 +136,54 @@ namespace VikingChess.UI2
 
             DrawBoard();
 
+
+
+            var spriteSize = 64;
+            var drawStartX = 960 / 2;
+            var drawStartY = 120;
+
+            var mouseState = Mouse.GetState();
+            var mousePoint = new Point(mouseState.X, mouseState.Y);
+            var mouseX = mousePoint.X - drawStartX;
+            var mouseY = mousePoint.Y - drawStartY;
+
+
+
+            for (int x = 0; x < board.Columns; x++)
+            {
+                for (int y = 0; y < board.Rows; y++)
+                {
+                    var xx = (mouseX / 32 + mouseY / 16) / 2;
+                    var yy = (mouseY / 16 - (mouseX / 32)) / 2;
+
+                    var posX = 0;
+                    var posY = 0;
+
+                    if (xx >= 0 && xx < 11)
+                    {
+                        if (yy >= 0 && yy < 11)
+                        {
+                            posX = (int)board.BoardPositions[xx, yy].X;
+                            posY = (int)board.BoardPositions[xx, yy].Y;
+                        }
+                    }
+
+                    var width = 64;
+                    var height = 64;
+
+                    var drawRect = new Rectangle(posX, posY, width, height);
+                    spriteBatch.Draw(spriteLegalMove, drawRect, Color.White);
+
+                    //if (collisionHandler.PointColisionWithBox(mouseX, mouseY, posX, posY, width, height))
+                    //{
+                    //    var drawRect = new Rectangle(posX, posY, width, height);
+                    //    spriteBatch.Draw(spriteTestSquare, drawRect, Color.White);
+                    //}
+                }
+            }
+
+
+
             base.Draw(gameTime);
 
             spriteBatch.End();
@@ -141,25 +191,50 @@ namespace VikingChess.UI2
 
         private void DrawBoard()
         {
-            var squareWidth = 64;
-            var squareHeight = 32;
-            var spriteSize = 64;
-            var drawStartX = 0; //windowWidth / 2 - (spriteSize / 2);
-            var drawStartY = 80;
-
-            DrawTiles(spriteSize, squareWidth, squareHeight, drawStartX, drawStartY);
-
-            DrawPieces(squareWidth, squareHeight, drawStartX, drawStartY);
-
-
+            DrawTiles();
+            DrawPieces();
         }
 
-        private void DrawPieces(int squareWidth, int squareHeight, int drawStartX, int drawStartY)
+        private void DrawTiles()
+        {
+            var spriteSize = 64;
+
+            for (int x = 0; x < board.Columns; x++)
+            {
+                for (int y = 0; y < board.Rows; y++)
+                {
+
+                    var drawX = (int)board.BoardPositions[x, y].X;
+                    var drawY = (int)board.BoardPositions[x, y].Y;
+                    var drawRect = new Rectangle(drawX, drawY, spriteSize, spriteSize);
+
+                    //Grass tile
+                    spriteBatch.Draw(spriteTileGrass, drawRect, Color.White);
+
+                    //Refuge
+                    if (board.Board[x, y] != null && board.Board[x, y].Team == Piece.teams.refuge)
+                    {
+                        spriteBatch.Draw(spriteRefuge, drawRect, Color.White);
+                    }
+
+                    //Legal moves
+                    if (gameplayHandler.SelectedPiece != null)
+                    {
+                        if (board.LegalMoves[x, y] != null)
+                        {
+                            spriteBatch.Draw(spriteLegalMove, drawRect, Color.White);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void DrawPieces()
         {
             var pieceWidth = 24;
             var pieceHeight = 44;
             var pieceOffsetX = 20;
-            var pieceOffsetY = 6;
+            var pieceOffsetY = -6;
 
             for (int x = 0; x < board.Columns; x++)
             {
@@ -167,11 +242,9 @@ namespace VikingChess.UI2
                 {
                     if (board.Board[x, y] != null)
                     {
-                        var pieceOffset = (squareWidth / 2) + (pieceWidth / 2);
-                        var screenX = ((x - y) * squareWidth / 2) + drawStartX + pieceOffsetX;
-                        var screenY = ((x + y) * squareHeight / 2) + drawStartY - pieceOffsetY;
-
-                        var drawPieceRect = new Rectangle(screenX, screenY, pieceWidth, pieceHeight);
+                        var drawX = (int)board.BoardPositions[x, y].X + pieceOffsetX;
+                        var drawY = (int)board.BoardPositions[x, y].Y + pieceOffsetY;
+                        var drawRect = new Rectangle(drawX, drawY, pieceWidth, pieceHeight);
 
                         //Defenders
                         if (board.Board[x, y].Team == Piece.teams.defenders)
@@ -179,13 +252,13 @@ namespace VikingChess.UI2
                             //Normal
                             if (board.Board[x, y].Type == Piece.types.normalPiece)
                             {
-                                spriteBatch.Draw(spritePieceDefenderNormal, drawPieceRect, Color.White);
+                                spriteBatch.Draw(spritePieceDefenderNormal, drawRect, Color.White);
                             }
 
                             //King
                             if (board.Board[x, y].Type == Piece.types.kingPiece)
                             {
-                                spriteBatch.Draw(spritePieceDefenderKing, drawPieceRect, Color.White);
+                                spriteBatch.Draw(spritePieceDefenderKing, drawRect, Color.White);
                             }
                         }
 
@@ -195,7 +268,7 @@ namespace VikingChess.UI2
                             //Normal
                             if (board.Board[x, y].Type == Piece.types.normalPiece)
                             {
-                                spriteBatch.Draw(spritePieceAttackerNormal, drawPieceRect, Color.White);
+                                spriteBatch.Draw(spritePieceAttackerNormal, drawRect, Color.White);
                             }
                         }
                     }
@@ -203,35 +276,6 @@ namespace VikingChess.UI2
             }
         }
 
-        private void DrawTiles(int spriteSize, int squareWidth, int squareHeight, int drawStartX, int drawStartY)
-        {
-            for (int x = 0; x < board.Columns; x++)
-            {
-                for (int y = 0; y < board.Rows; y++)
-                {
-                    var drawX = ((x - y) * squareWidth / 2) + drawStartX;
-                    var drawY = ((x + y) * squareHeight / 2) + drawStartY;
-
-                    //Grass tile
-                    var drawTileRect = new Rectangle(drawX, drawY, spriteSize, spriteSize);
-                    spriteBatch.Draw(spriteTileGrass, drawTileRect, Color.White);
-
-                    //Refuges
-                    if (board.Board[x, y] != null && board.Board[x, y].Team == Piece.teams.refuge)
-                    {
-                        spriteBatch.Draw(spriteRefuge, drawTileRect, Color.White);
-                    }
-
-                    //Legal moves
-                    if (gameplayHandler.SelectedPiece != null)
-                    {
-                        if (board.LegalMoves[x, y] != null)
-                        {
-                            spriteBatch.Draw(spriteLegalMove, drawTileRect, Color.White);
-                        }
-                    }
-                }
-            }
-        }
+        
     }
 }
