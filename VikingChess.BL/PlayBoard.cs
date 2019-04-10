@@ -36,7 +36,7 @@ namespace VikingChessBL
 
             AddPiecesToBoard();
             AddRefugesToBoard();
-            CalculateBoardPositions(960, 540); //TODO: This should not be magic numbers...
+            CalculateBoardPositions(); //TODO: This should not be magic numbers...
         }
 
         public int Columns { get; private set; }
@@ -130,22 +130,17 @@ namespace VikingChessBL
             Board[10, 10] = new Piece(Piece.teams.refuge, Piece.types.cornerRefuge, startPosition);
         }
 
-        private void CalculateBoardPositions(int width, int height)
+        private void CalculateBoardPositions()
         {
-            var windowWidth = width;
-            var windowHeight = height;
-            var spriteSize = 64;
-            var squareWidth = 64;
-            var squareHeight = 32;
-            var drawStartX = windowWidth / 2 - (spriteSize / 2);
-            var drawStartY = 80;
+            var tileWidth = 64;
+            var tileHeight = 32;
 
             for (int x = 0; x < Columns; x++)
             {
                 for (int y = 0; y < Rows; y++)
                 {
-                    var posX = ((x - y) * squareWidth / 2) + drawStartX;
-                    var posY = ((x + y) * squareHeight / 2) + drawStartY;
+                    var posX = ((x - y) * tileWidth / 2) - (tileWidth / 2);
+                    var posY = ((x + y) * tileHeight / 2);
 
                     BoardPositions[x, y] = new Vector2(posX,posY);
                 }

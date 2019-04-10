@@ -13,6 +13,13 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin Fonts/Normal.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/Normal.spritefont;Fonts/normal.spritefont
+
 #begin Layers/legal_move.png
 /importer:TextureImporter
 /processor:TextureProcessor

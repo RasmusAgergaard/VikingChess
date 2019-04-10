@@ -27,6 +27,9 @@ namespace VikingChess.UI2
         Texture2D spriteLegalMove;
         Texture2D spriteTestSquare;
 
+        //Fonts
+        SpriteFont normalFont;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -65,6 +68,9 @@ namespace VikingChess.UI2
             spriteSelectedPiece = Content.Load<Texture2D>(@"Layers\selected_piece");
             spriteLegalMove = Content.Load<Texture2D>(@"Layers\legal_move");
             spriteTestSquare = Content.Load<Texture2D>(@"Test\square");
+
+            //Fonts
+            normalFont = Content.Load<SpriteFont>(@"Fonts\normal");
         }
 
         protected override void UnloadContent()
@@ -135,12 +141,31 @@ namespace VikingChess.UI2
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             DrawBoard();
+            
 
+            base.Draw(gameTime);
 
+            spriteBatch.End();
+        }
 
-            var spriteSize = 64;
+        
+
+        private void DrawBoard()
+        {
+            DrawTiles();
+            DrawMouseHover();
+            //DrawPieces();
+        }
+
+        private void DrawMouseHover()
+        {
             var drawStartX = 960 / 2;
-            var drawStartY = 120;
+            var drawStartY = 100;
+
+            var spriteWidth = 64;
+            var spriteHeight = 32;
+            var spriteWidthHalf = spriteWidth / 2;
+            var spriteHeightHalf = spriteHeight / 2;
 
             var mouseState = Mouse.GetState();
             var mousePoint = new Point(mouseState.X, mouseState.Y);
@@ -148,83 +173,63 @@ namespace VikingChess.UI2
             var mouseY = mousePoint.Y - drawStartY;
 
 
+            var posX = ((mouseX / spriteWidthHalf + mouseY / spriteHeightHalf) / 2);
+            var posY = (mouseY / spriteHeightHalf - (mouseX / spriteWidthHalf)) / 2;
 
-            for (int x = 0; x < board.Columns; x++)
+            var drawPosX = 0;
+            var drawPosY = 0;
+
+            if (posX >= 0 && posX < 11 && posY >= 0 && posY < 11)
             {
-                for (int y = 0; y < board.Rows; y++)
-                {
-                    var xx = (mouseX / 32 + mouseY / 16) / 2;
-                    var yy = (mouseY / 16 - (mouseX / 32)) / 2;
+                drawPosX = (int)board.BoardPositions[posX, posY].X + drawStartX;
+                drawPosY = (int)board.BoardPositions[posX, posY].Y + drawStartY;
 
-                    var posX = 0;
-                    var posY = 0;
-
-                    if (xx >= 0 && xx < 11)
-                    {
-                        if (yy >= 0 && yy < 11)
-                        {
-                            posX = (int)board.BoardPositions[xx, yy].X;
-                            posY = (int)board.BoardPositions[xx, yy].Y;
-                        }
-                    }
-
-                    var width = 64;
-                    var height = 64;
-
-                    var drawRect = new Rectangle(posX, posY, width, height);
-                    spriteBatch.Draw(spriteLegalMove, drawRect, Color.White);
-
-                    //if (collisionHandler.PointColisionWithBox(mouseX, mouseY, posX, posY, width, height))
-                    //{
-                    //    var drawRect = new Rectangle(posX, posY, width, height);
-                    //    spriteBatch.Draw(spriteTestSquare, drawRect, Color.White);
-                    //}
-                }
+                var drawRect = new Rectangle(drawPosX, drawPosY, spriteWidth, spriteHeight);
+                spriteBatch.Draw(spriteLegalMove, drawRect, Color.White);
             }
 
+            //Draw text
+            spriteBatch.DrawString(normalFont, "Map coordinate: " + posX + " : " + posY, new Vector2(30, 30), Color.Black);
+            spriteBatch.DrawString(normalFont, "Actual mouse pos: " + mousePoint.X + " : " + mousePoint.Y, new Vector2(30, 60), Color.Black);
+            spriteBatch.DrawString(normalFont, "Calculated mouse pos: " + mouseX + " : " + mouseY, new Vector2(30, 90), Color.Black);
 
 
-            base.Draw(gameTime);
+            spriteBatch.DrawString(normalFont, "DrawPos: " + drawPosX + " : " + drawPosY, new Vector2(30, 120), Color.Black);
 
-            spriteBatch.End();
-        }
 
-        private void DrawBoard()
-        {
-            DrawTiles();
-            DrawPieces();
         }
 
         private void DrawTiles()
         {
-            var spriteSize = 64;
+            var spriteWidth = 64;
+            var spriteHeight = 32;
 
             for (int x = 0; x < board.Columns; x++)
             {
                 for (int y = 0; y < board.Rows; y++)
                 {
 
-                    var drawX = (int)board.BoardPositions[x, y].X;
-                    var drawY = (int)board.BoardPositions[x, y].Y;
-                    var drawRect = new Rectangle(drawX, drawY, spriteSize, spriteSize);
+                    var drawX = (int)board.BoardPositions[x, y].X + (960 / 2);
+                    var drawY = (int)board.BoardPositions[x, y].Y + (100);
+                    var drawRect = new Rectangle(drawX, drawY, spriteWidth, spriteHeight);
 
                     //Grass tile
                     spriteBatch.Draw(spriteTileGrass, drawRect, Color.White);
 
-                    //Refuge
-                    if (board.Board[x, y] != null && board.Board[x, y].Team == Piece.teams.refuge)
-                    {
-                        spriteBatch.Draw(spriteRefuge, drawRect, Color.White);
-                    }
+                    ////Refuge
+                    //if (board.Board[x, y] != null && board.Board[x, y].Team == Piece.teams.refuge)
+                    //{
+                    //    spriteBatch.Draw(spriteRefuge, drawRect, Color.White);
+                    //}
 
-                    //Legal moves
-                    if (gameplayHandler.SelectedPiece != null)
-                    {
-                        if (board.LegalMoves[x, y] != null)
-                        {
-                            spriteBatch.Draw(spriteLegalMove, drawRect, Color.White);
-                        }
-                    }
+                    ////Legal moves
+                    //if (gameplayHandler.SelectedPiece != null)
+                    //{
+                    //    if (board.LegalMoves[x, y] != null)
+                    //    {
+                    //        spriteBatch.Draw(spriteLegalMove, drawRect, Color.White);
+                    //    }
+                    //}
                 }
             }
         }
