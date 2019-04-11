@@ -62,12 +62,12 @@ namespace VikingChessBL
         {
             var mouseX = mousePoint.X;
             var mouseY = mousePoint.Y;
-            var posX = Board.Position.X + (Board.FieldWidth * column);
-            var posY = Board.Position.Y + (Board.FieldHeight * row);
-            var width = Board.FieldWidth;
-            var height = Board.FieldHeight;
+            var posX = (int)Board.BoardPositions[column, row].X + 16;
+            var posY = (int)Board.BoardPositions[column, row].Y + 23;
+            var colissionBoxwidth = 32;
+            var colissionBoxHeight = 18;
 
-            if (collisionHandler.PointColisionWithBox(mouseX, mouseY, posX, posY, width, height))
+            if (collisionHandler.PointColisionWithBox(mouseX, mouseY, posX, posY, colissionBoxwidth, colissionBoxHeight))
             {
                 if (MousePress(mouseState))
                 {

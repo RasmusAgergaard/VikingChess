@@ -136,15 +136,12 @@ namespace VikingChess.UI2
 
         protected override void Draw(GameTime gameTime)
         {
-            //spriteBatch.Begin();
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise);
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             DrawBoard();
-            
 
             base.Draw(gameTime);
-
             spriteBatch.End();
         }
 
@@ -154,82 +151,69 @@ namespace VikingChess.UI2
         {
             DrawTiles();
             DrawMouseHover();
-            //DrawPieces();
+            DrawPieces();
         }
 
         private void DrawMouseHover()
         {
-            var drawStartX = 960 / 2;
-            var drawStartY = 100;
-
-            var spriteWidth = 64;
-            var spriteHeight = 32;
-            var spriteWidthHalf = spriteWidth / 2;
-            var spriteHeightHalf = spriteHeight / 2;
-
             var mouseState = Mouse.GetState();
             var mousePoint = new Point(mouseState.X, mouseState.Y);
-            var mouseX = mousePoint.X - drawStartX;
-            var mouseY = mousePoint.Y - drawStartY;
 
+            var spriteWidth = 64;
+            var spriteHeight = 64;
+            var colissionBoxwidth = 32;
+            var colissionBoxHeight = 18;
 
-            var posX = ((mouseX / spriteWidthHalf + mouseY / spriteHeightHalf) / 2);
-            var posY = (mouseY / spriteHeightHalf - (mouseX / spriteWidthHalf)) / 2;
-
-            var drawPosX = 0;
-            var drawPosY = 0;
-
-            if (posX >= 0 && posX < 11 && posY >= 0 && posY < 11)
+            for (int x = 0; x < board.Columns; x++)
             {
-                drawPosX = (int)board.BoardPositions[posX, posY].X + drawStartX;
-                drawPosY = (int)board.BoardPositions[posX, posY].Y + drawStartY;
+                for (int y = 0; y < board.Rows; y++)
+                {
+                    var posX = (int)board.BoardPositions[x, y].X + 16;
+                    var posY = (int)board.BoardPositions[x, y].Y + 23;
+                    var drawPosX = (int)board.BoardPositions[x, y].X;
+                    var drawPosY = (int)board.BoardPositions[x, y].Y;
 
-                var drawRect = new Rectangle(drawPosX, drawPosY, spriteWidth, spriteHeight);
-                spriteBatch.Draw(spriteLegalMove, drawRect, Color.White);
+                    if (collisionHandler.PointColisionWithBox(mousePoint.X, mousePoint.Y, posX, posY, colissionBoxwidth, colissionBoxHeight))
+                    {
+                        //Hover
+                        var drawRect = new Rectangle(drawPosX, drawPosY, spriteWidth, spriteHeight);
+                        spriteBatch.Draw(spriteSelectedPiece, drawRect, Color.White);
+                    }
+                }
             }
-
-            //Draw text
-            spriteBatch.DrawString(normalFont, "Map coordinate: " + posX + " : " + posY, new Vector2(30, 30), Color.Black);
-            spriteBatch.DrawString(normalFont, "Actual mouse pos: " + mousePoint.X + " : " + mousePoint.Y, new Vector2(30, 60), Color.Black);
-            spriteBatch.DrawString(normalFont, "Calculated mouse pos: " + mouseX + " : " + mouseY, new Vector2(30, 90), Color.Black);
-
-
-            spriteBatch.DrawString(normalFont, "DrawPos: " + drawPosX + " : " + drawPosY, new Vector2(30, 120), Color.Black);
-
-
         }
 
         private void DrawTiles()
         {
             var spriteWidth = 64;
-            var spriteHeight = 32;
+            var spriteHeight = 64;
 
             for (int x = 0; x < board.Columns; x++)
             {
                 for (int y = 0; y < board.Rows; y++)
                 {
 
-                    var drawX = (int)board.BoardPositions[x, y].X + (960 / 2);
-                    var drawY = (int)board.BoardPositions[x, y].Y + (100);
+                    var drawX = (int)board.BoardPositions[x, y].X;
+                    var drawY = (int)board.BoardPositions[x, y].Y;
                     var drawRect = new Rectangle(drawX, drawY, spriteWidth, spriteHeight);
 
                     //Grass tile
                     spriteBatch.Draw(spriteTileGrass, drawRect, Color.White);
 
-                    ////Refuge
-                    //if (board.Board[x, y] != null && board.Board[x, y].Team == Piece.teams.refuge)
-                    //{
-                    //    spriteBatch.Draw(spriteRefuge, drawRect, Color.White);
-                    //}
+                    //Refuge
+                    if (board.Board[x, y] != null && board.Board[x, y].Team == Piece.teams.refuge)
+                    {
+                        spriteBatch.Draw(spriteRefuge, drawRect, Color.White);
+                    }
 
-                    ////Legal moves
-                    //if (gameplayHandler.SelectedPiece != null)
-                    //{
-                    //    if (board.LegalMoves[x, y] != null)
-                    //    {
-                    //        spriteBatch.Draw(spriteLegalMove, drawRect, Color.White);
-                    //    }
-                    //}
+                    //Legal moves
+                    if (gameplayHandler.SelectedPiece != null)
+                    {
+                        if (board.LegalMoves[x, y] != null)
+                        {
+                            spriteBatch.Draw(spriteLegalMove, drawRect, Color.White);
+                        }
+                    }
                 }
             }
         }
@@ -279,8 +263,6 @@ namespace VikingChess.UI2
                     }
                 }
             }
-        }
-
-        
+        }  
     }
 }

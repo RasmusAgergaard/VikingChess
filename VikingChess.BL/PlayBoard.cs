@@ -132,6 +132,8 @@ namespace VikingChessBL
 
         private void CalculateBoardPositions()
         {
+            var drawStartX = 960 / 2; //TODO: this should not be magic numbers
+            var drawStartY = 100;
             var tileWidth = 64;
             var tileHeight = 32;
 
@@ -139,8 +141,8 @@ namespace VikingChessBL
             {
                 for (int y = 0; y < Rows; y++)
                 {
-                    var posX = ((x - y) * tileWidth / 2) - (tileWidth / 2);
-                    var posY = ((x + y) * tileHeight / 2);
+                    var posX = ((x - y) * tileWidth / 2) - (tileWidth / 2) + drawStartX;
+                    var posY = ((x + y) * tileHeight / 2) + drawStartY;
 
                     BoardPositions[x, y] = new Vector2(posX,posY);
                 }
