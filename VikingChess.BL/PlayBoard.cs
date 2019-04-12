@@ -25,18 +25,15 @@ namespace VikingChessBL
             Board = new Piece[Columns, Rows];
             LegalMoves = new Legal[Columns, Rows];
             BoardPositions = new Vector2[Columns, Rows];
-            SpriteName = "board_360x360";
-            BoardWidth = 360;
-            BoardHeight = 360;
-            FieldWidth = 64;
-            FieldHeight = 32;
+            FieldWidth = 40;
+            FieldHeight = 40;
             State = gameState.attackerTurn;
             Turn = 0;
             TurnLog = "";
 
             AddPiecesToBoard();
             AddRefugesToBoard();
-            CalculateBoardPositions(); //TODO: This should not be magic numbers...
+            CalculateBoardPositions();
         }
 
         public int Columns { get; private set; }
@@ -45,9 +42,6 @@ namespace VikingChessBL
         public Piece[,] Board { get; set; }
         public Legal[,] LegalMoves { get; set; }
         public Vector2[,] BoardPositions { get; set; }
-        public String SpriteName { get; set; }
-        public int BoardWidth { get; set; }
-        public int BoardHeight { get; set; }
         public float FieldWidth { get; set; }
         public float FieldHeight { get; set; }
         public gameState State { get; set; }

@@ -16,6 +16,9 @@ namespace VikingChess.UI2
         //Graphics
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        int windowWidth = 960;
+        int windowHeight = 540;
+
 
         //Sprites
         Texture2D spriteTileGrass;
@@ -33,8 +36,8 @@ namespace VikingChess.UI2
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
-            graphics.PreferredBackBufferWidth = 960;
-            graphics.PreferredBackBufferHeight = 540;
+            graphics.PreferredBackBufferWidth = windowWidth;
+            graphics.PreferredBackBufferHeight = windowHeight;
             graphics.ApplyChanges();
             Content.RootDirectory = "Content";
         }
@@ -75,7 +78,7 @@ namespace VikingChess.UI2
 
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+           
         }
 
         protected override void Update(GameTime gameTime)
@@ -139,7 +142,7 @@ namespace VikingChess.UI2
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise);
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            DrawBoard();
+            DrawGameArea();
 
             base.Draw(gameTime);
             spriteBatch.End();
@@ -147,8 +150,9 @@ namespace VikingChess.UI2
 
         
 
-        private void DrawBoard()
+        private void DrawGameArea()
         {
+
             DrawTiles();
             DrawMouseHover();
             DrawPieces();
@@ -185,16 +189,19 @@ namespace VikingChess.UI2
 
         private void DrawTiles()
         {
-            var spriteWidth = 64;
-            var spriteHeight = 64;
+            var spriteWidth = 40;
+            var spriteHeight = 40;
+            var boardWidth = spriteWidth * board.Columns;
+            var boardHeight = spriteHeight * board.Rows;
+            var drawStartX = (windowWidth / 2) - (boardWidth / 2);
+            var drawStartY = (windowHeight / 2) - (boardHeight / 2);
 
             for (int x = 0; x < board.Columns; x++)
             {
                 for (int y = 0; y < board.Rows; y++)
                 {
-
-                    var drawX = (int)board.BoardPositions[x, y].X;
-                    var drawY = (int)board.BoardPositions[x, y].Y;
+                    var drawX = (x * spriteWidth) + drawStartX;
+                    var drawY = (y * spriteHeight) + drawStartY;
                     var drawRect = new Rectangle(drawX, drawY, spriteWidth, spriteHeight);
 
                     //Grass tile
