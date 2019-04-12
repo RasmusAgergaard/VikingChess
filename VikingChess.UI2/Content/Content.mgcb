@@ -80,7 +80,7 @@
 /processorParam:TextureFormat=Color
 /build:Pieces/piece_defender_normal.png
 
-#begin Refuges/tile_refuge.png
+#begin Refuges/tile_refuge_center.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -90,7 +90,19 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Refuges/tile_refuge.png
+/build:Refuges/tile_refuge_center.png
+
+#begin Refuges/tile_refuge_corner.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Refuges/tile_refuge_corner.png
 
 #begin Test/refuge.png
 /importer:TextureImporter
