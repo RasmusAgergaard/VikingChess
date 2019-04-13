@@ -13,9 +13,11 @@ namespace VikingChessBL
         CollisionHandler collisionHandler = new CollisionHandler();
         LegalMove legalMove = new LegalMove();
 
-        public GameplayHandler(PlayBoard board)
+        public GameplayHandler(PlayBoard board, int windowWidth, int windowHeight)
         {
             Board = board;
+            WindowWidth = windowWidth;
+            WindowHeight = windowHeight;
         }
 
         public PlayBoard Board { get; set; }
@@ -25,6 +27,8 @@ namespace VikingChessBL
         public MouseState CurrentMouseState { get; set; }
         public MouseState OldMouseState { get; set; }
         public Point MousePoint { get; set; }
+        public int WindowWidth { get; set; }
+        public int WindowHeight { get; set; }
 
         public PlayBoard Update(GameSetup gameSetup)
         {
@@ -58,21 +62,23 @@ namespace VikingChessBL
             return Board;
         }
 
-        private void PieceControl(MouseState mouseState, Point mousePoint, int column, int row, GameSetup gameSetup)
+        private void PieceControl(MouseState mouseState, Point mousePoint, int x, int y, GameSetup gameSetup)
         {
-            var mouseX = mousePoint.X;
-            var mouseY = mousePoint.Y;
-            var posX = (int)Board.BoardPositions[column, row].X + 16;
-            var posY = (int)Board.BoardPositions[column, row].Y + 23;
-            var colissionBoxwidth = 32;
-            var colissionBoxHeight = 18;
+            var spriteWidth = 40;
+            var spriteHeight = 40;
+            var boardWidth = spriteWidth * Board.Columns;
+            var boardHeight = spriteHeight * Board.Rows;
+            var drawStartX = (WindowWidth / 2) - (boardWidth / 2);
+            var drawStartY = (WindowHeight / 2) - (boardHeight / 2);
+            var posX = (x * spriteWidth) + drawStartX;
+            var posY = (y * spriteHeight) + drawStartY;
 
-            if (collisionHandler.PointColisionWithBox(mouseX, mouseY, posX, posY, colissionBoxwidth, colissionBoxHeight))
+            if (collisionHandler.PointColisionWithBox(mousePoint.X, mousePoint.Y, posX, posY, spriteWidth, spriteHeight))
             {
                 if (MousePress(mouseState))
                 {
-                    SelectPiece(column, row, gameSetup);
-                    MovePiece(column, row);
+                    SelectPiece(x, y, gameSetup);
+                    MovePiece(x, y);
 
                     //Find legal moves, and return the updated board
                     Board = legalMove.FindLegalMoves(Board, SelectedPiece, SelectedPieceColumn, SelectedPieceRow);
@@ -93,23 +99,23 @@ namespace VikingChessBL
             return mousePressed;
         }
 
-        private void SelectPiece(int column, int row, GameSetup gameSetup)
+        private void SelectPiece(int x, int y, GameSetup gameSetup)
         {
-            if (Board.Board[column, row] != null)
+            if (Board.Board[x, y] != null)
             {
                 //Only select if the pieces of the team that has the turn
-                if (Board.Board[column, row].Team == Piece.teams.attackers && Board.State == PlayBoard.gameState.attackerTurn)
+                if (Board.Board[x, y].Team == Piece.teams.attackers && Board.State == PlayBoard.gameState.attackerTurn)
                 {
-                    SelectedPiece = Board.Board[column, row];
-                    SelectedPieceColumn = column;
-                    SelectedPieceRow = row;
+                    SelectedPiece = Board.Board[x, y];
+                    SelectedPieceColumn = x;
+                    SelectedPieceRow = y;
                 }
 
-                if (Board.Board[column, row].Team == Piece.teams.defenders && Board.State == PlayBoard.gameState.defenderTurn)
+                if (Board.Board[x, y].Team == Piece.teams.defenders && Board.State == PlayBoard.gameState.defenderTurn)
                 {
-                    SelectedPiece = Board.Board[column, row];
-                    SelectedPieceColumn = column;
-                    SelectedPieceRow = row;
+                    SelectedPiece = Board.Board[x, y];
+                    SelectedPieceColumn = x;
+                    SelectedPieceRow = y;
                 }
             }
         }
@@ -122,19 +128,21 @@ namespace VikingChessBL
             } 
         }
 
-        private void MovePiece(int column, int row)
+        private void MovePiece(int x, int y)
         {
             if (SelectedPiece != null)
             {
-                if (Board.Board[column, row] == null && Board.LegalMoves[column, row] != null)
+                if (Board.Board[x, y] == null && Board.LegalMoves[x, y] != null)
                 {
                     //Move piece
-                    Board.Board[column, row] = SelectedPiece;
+                    Board.Board[x, y] = SelectedPiece;
                     Board.Board[SelectedPieceColumn, SelectedPieceRow] = null;
                     SelectedPiece = null;
 
                     Board.ChangeTurn();
-                    Board.Board[column, row].MovedInTurn = Board.Turn;
+                    Board.Board[x, y].MovedInTurn = Board.Turn;
+
+                    Board.TurnLog += $"Move from ({SelectedPieceColumn},{SelectedPieceRow}) to ({x},{y})\n";
                 }
             }
         }
@@ -277,7 +285,7 @@ namespace VikingChessBL
 
         private void KillPiece(int column, int row)
         {
-            Board.TurnLog += $"Piece killed - {column},{row}\n";
+            Board.TurnLog += $"Piece killed at ({column},{row})\n";
             Board.Board[column, row] = null;
         }
 
@@ -314,11 +322,13 @@ namespace VikingChessBL
             if (Board.DoesAttackersHaveKing && !doesAttackerKingExist)
             {
                 Board.State = PlayBoard.gameState.defenderWin;
+                Board.TurnLog += $"King killed!\n";
             }
 
             if (Board.DoesDefendersHaveKing && !doesDefenderKingExist)
             {
                 Board.State = PlayBoard.gameState.attackerWin;
+                Board.TurnLog += $"King killed!\n";
             }
         }
 
@@ -362,11 +372,13 @@ namespace VikingChessBL
             if (Board.DoesAttackerKingWantsToFlee && hasAttackerKingFled)
             {
                 Board.State = PlayBoard.gameState.attackerWin;
+                Board.TurnLog += $"King has escaped!\n";
             }
 
             if (Board.DoesDefenderKingWantsToFlee && hasDefenderKingFled)
             {
                 Board.State = PlayBoard.gameState.defenderWin;
+                Board.TurnLog += $"King has escaped!\n";
             }
         }
     }

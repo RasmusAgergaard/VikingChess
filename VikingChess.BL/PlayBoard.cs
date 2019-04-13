@@ -154,58 +154,47 @@ namespace VikingChessBL
             switch (State)
             {
                 case gameState.gameStart:
-                    TurnLog += State.ToString() + "\n";
                     State = gameState.attackerTurn;
                     break;
 
                 case gameState.attackerTurn:
-                    TurnLog += State.ToString() + "\n";
                     State = gameState.attackerMoveing;
                     Turn += 1;
                     break;
 
                 case gameState.attackerMoveing:
-                    TurnLog += State.ToString() + "\n";
                     State = gameState.attackerFighting;
                     break;
 
                 case gameState.attackerFighting:
-                    TurnLog += State.ToString() + "\n";
                     State = gameState.attackerWinCheck;
                     break;
 
                 case gameState.attackerWinCheck:
-                    TurnLog += State.ToString() + "\n";
                     State = gameState.defenderTurn;
                     break;
 
                 case gameState.defenderTurn:
-                    TurnLog += State.ToString() + "\n";
                     State = gameState.defenderMoveing;
                     Turn += 1;
                     break;
 
                 case gameState.defenderMoveing:
-                    TurnLog += State.ToString() + "\n";
                     State = gameState.defenderFighting;
                     break;
 
                 case gameState.defenderFighting:
-                    TurnLog += State.ToString() + "\n";
                     State = gameState.defenderWinCheck;
                     break;
 
                 case gameState.defenderWinCheck:
-                    TurnLog += State.ToString() + "\n";
                     State = gameState.attackerTurn;
                     break;
 
                 case gameState.attackerWin:
-                    TurnLog += State.ToString() + "\n";
                     break;
 
                 case gameState.defenderWin:
-                    TurnLog += State.ToString() + "\n";
                     break;
             }
         }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using VikingChessBL;
@@ -50,7 +51,7 @@ namespace VikingChess.UI2
                            doesAttackerKingWantsToFlee: false,
                            doesDefenderKingWantsToFlee: true);
 
-            gameplayHandler = new GameplayHandler(board);
+            gameplayHandler = new GameplayHandler(board, windowWidth, windowHeight);
             collisionHandler = new CollisionHandler();
 
             this.IsMouseVisible = true;
@@ -142,15 +143,16 @@ namespace VikingChess.UI2
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise);
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            DrawGameArea();
+            DrawBoard();
+            DrawGUI();
 
             base.Draw(gameTime);
             spriteBatch.End();
         }
 
-        
 
-        private void DrawGameArea()
+
+        private void DrawBoard()
         {
             for (int x = 0; x < board.Columns; x++)
             {
@@ -161,12 +163,8 @@ namespace VikingChess.UI2
                     DrawPieces(x, y);
                 }
             }
-
-
-
         }
 
-       
         private void DrawTiles(int x, int y)
         {
             var spriteWidth = 40;
@@ -279,6 +277,16 @@ namespace VikingChess.UI2
                     }
                 }
             }
-        }  
+        }
+
+        private void DrawGUI()
+        {
+            spriteBatch.DrawString(normalFont, "Game state: " + board.State.ToString(), new Vector2(20, 20), Color.Black);
+            spriteBatch.DrawString(normalFont, "Turn: " + board.Turn.ToString(), new Vector2(20, 40), Color.Black);
+
+            var logSize = normalFont.MeasureString(board.TurnLog);
+            var logPos = new Vector2(720,470 - logSize.Y);
+            spriteBatch.DrawString(normalFont, "Log:\n" + board.TurnLog, logPos, Color.Black);
+        }
     }
 }
