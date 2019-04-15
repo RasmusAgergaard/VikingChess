@@ -150,8 +150,6 @@ namespace VikingChess.UI2
             spriteBatch.End();
         }
 
-
-
         private void DrawBoard()
         {
             for (int x = 0; x < board.Columns; x++)
@@ -160,6 +158,7 @@ namespace VikingChess.UI2
                 {
                     DrawTiles(x, y);
                     DrawMouseHover(x, y);
+                    DrawSelectedPiece(x ,y);
                     DrawPieces(x, y);
                 }
             }
@@ -225,10 +224,39 @@ namespace VikingChess.UI2
 
             if (collisionHandler.PointColisionWithBox(mousePoint.X, mousePoint.Y, drawX, drawY, spriteWidth, spriteHeight))
             {
-                //Hover
-                var drawRect = new Rectangle(drawX, drawY, spriteWidth, spriteHeight);
-                spriteBatch.Draw(spriteSelectedPiece, drawRect, Color.White);
+                if (board.Board[x, y] != null && board.Board[x, y].Team == Piece.teams.attackers && board.State == PlayBoard.gameState.attackerTurn)
+                {
+                    var drawRect = new Rectangle(drawX, drawY, spriteWidth, spriteHeight);
+                    spriteBatch.Draw(spriteSelectedPiece, drawRect, Color.White);
+                }
 
+                if (board.Board[x, y] != null && board.Board[x, y].Team == Piece.teams.defenders && board.State == PlayBoard.gameState.defenderTurn)
+                {
+                    var drawRect = new Rectangle(drawX, drawY, spriteWidth, spriteHeight);
+                    spriteBatch.Draw(spriteSelectedPiece, drawRect, Color.White);
+                }
+            }
+        }
+
+        private void DrawSelectedPiece(int x, int y)
+        {
+            var spriteWidth = 40;
+            var spriteHeight = 40;
+            var boardWidth = spriteWidth * board.Columns;
+            var boardHeight = spriteHeight * board.Rows;
+            var drawStartX = (windowWidth / 2) - (boardWidth / 2);
+            var drawStartY = (windowHeight / 2) - (boardHeight / 2);
+
+            var drawX = (x * spriteWidth) + drawStartX;
+            var drawY = (y * spriteHeight) + drawStartY;
+
+            if (board.Board[x, y] != null && gameplayHandler.SelectedPiece != null)
+            {
+                if (board.Board[x, y] == gameplayHandler.SelectedPiece)
+                {
+                    var drawRect = new Rectangle(drawX, drawY, spriteWidth, spriteHeight);
+                    spriteBatch.Draw(spriteSelectedPiece, drawRect, Color.White);
+                }
             }
         }
 
